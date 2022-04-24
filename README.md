@@ -1,6 +1,7 @@
 ## 第 33 回 PostgreSQL アンカンファレンス＠オンライン向けのサンプルアプリを作る
 
 - https://pgunconf.connpass.com/event/243796/ の発表ネタ
+  - [こっち](https://github.com/hmatsu47/profile-app)で行くつもりだったけど会が延期になったので準備期間に余裕ができた
 - Supabase
   - https://supabase.com/
 - SolidJS
