@@ -39,7 +39,7 @@ export default function Auth() {
       <Box sx={{ width: "100%", maxWidth: "480px", minWidth: "300px" }}>
         <AppBar position="static">
           <Toolbar>
-            <Typography variant="h6" component="div" gutterBottom>
+            <Typography variant="h6" component="div"  sx={{ flexGrow: 1 }}>
               Supabase (RLS) + SolidJS のサンプル
             </Typography>
           </Toolbar>
@@ -47,7 +47,6 @@ export default function Auth() {
         <div style={{ padding: "10px 0 0 0" }}>
           <Typography variant="body1" gutterBottom>
             メールアドレスを入力して送信ボタンをクリックしてください。
-            その後、届いたメールのリンクをクリックしてください。
           </Typography>
         </div>
         {loading() ? (
