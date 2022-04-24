@@ -10,14 +10,14 @@ type Props = {
 type UpdateParams = {
   username: Accessor<string>,
   website: Accessor<string>,
-  avatar_url: string
+  avatarUrl: string
 }
 
 const Account = (props: Props) => {
   const [loading, setLoading] = createSignal<boolean>(true);
   const [username, setUsername] = createSignal<string>('');
   const [website, setWebsite] = createSignal<string>('');
-  const [avatar_url, setAvatarUrl] = createSignal<string>('');
+  const [avatarUrl, setAvatarUrl] = createSignal<string>('');
 
   createEffect(() => {
     props.session;
@@ -60,7 +60,7 @@ const Account = (props: Props) => {
         id: user!.id,
         username: username(),
         website: website(),
-        avatar_url: avatar_url(),
+        avatar_url: avatarUrl(),
         updated_at: new Date(),
       };
 
@@ -86,11 +86,11 @@ const Account = (props: Props) => {
         <>
           <div className="form-widget">
             <Avatar
-              url={avatar_url()}
+              url={avatarUrl()}
               size={"150px"}
               onUpload={(url: string) => {
                 setAvatarUrl(url);
-                updateProfile({ username, website, avatar_url: url });
+                updateProfile({ username, website, avatarUrl: url });
               }}
             />
           </div>

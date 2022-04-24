@@ -1,10 +1,12 @@
 import { createSignal, Show } from 'solid-js';
 import { supabase } from './supabaseClient';
 import Alert, { AlertColor } from '@suid/material/Alert';
+import AppBar from '@suid/material/AppBar';
 import Box from '@suid/material/Box';
 import Button from '@suid/material/Button';
 import Stack from '@suid/material/Stack';
 import TextField from '@suid/material/TextField';
+import Toolbar from '@suid/material/Toolbar';
 import Typography from '@suid/material/Typography';
 
 type Message = {
@@ -35,17 +37,25 @@ export default function Auth() {
   return (
     <div aria-live="polite">
       <Box sx={{ width: "100%", maxWidth: "480px", minWidth: "300px" }}>
-        <Typography variant="h5" component="div" gutterBottom>
-          Supabase (RLS) + SolidJS のサンプル
-        </Typography>
-        <Typography variant="body1" gutterBottom>
-          メールアドレスを入力して送信ボタンをクリックしてください。
-          その後、届いたメールのリンクをクリックしてください。
-        </Typography>
-        {loading() ? (
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" component="div" gutterBottom>
+              Supabase (RLS) + SolidJS のサンプル
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <div style={{ padding: "10px 0 0 0" }}>
           <Typography variant="body1" gutterBottom>
-            マジックリンク送信中...
+            メールアドレスを入力して送信ボタンをクリックしてください。
+            その後、届いたメールのリンクをクリックしてください。
           </Typography>
+        </div>
+        {loading() ? (
+          <div style={{ padding: "10px 0 0 0" }}>
+            <Typography variant="body1" gutterBottom>
+              マジックリンク送信中...
+            </Typography>
+          </div>
         ) : (
           <form onSubmit={handleLogin}>
             <Stack spacing={2} direction="column">

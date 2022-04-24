@@ -17,10 +17,16 @@ export default () => {
   })
 
   return (
-    <div style={{ width: "100%", padding: '50px 0 100px 0' }}>
-      <Box sx={{ width: "100%", minWidth: "320px", display: "flex", justifyContent: "center" }}>
-        {!session() ? <Auth /> : <Account key={session()!.user!.id} session={session()!} />}
-      </Box>
+    <>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+      />
+      <div>
+        <Box sx={{ width: "100%", minWidth: "320px", display: "flex", justifyContent: "center" }}>
+          {!session() ? <Auth /> : <Account key={session()!.user!.id} session={session()!} />}
+        </Box>
     </div>
+    </>
   );
 };
