@@ -1,27 +1,26 @@
-import type { Component } from 'solid-js';
+import { createSignal, createEffect } from 'solid-js';
+import { supabase } from './supabaseClient';
+import Box from '@suid/material/Box';
+import Auth from './Auth';
+import Account from './Account';
+import { Session } from '@supabase/supabase-js';
 
-import logo from './logo.svg';
-import styles from './App.module.css';
+export default () => {
+  const [session, setSession] = createSignal<Session | null>(null);
 
-const App: Component = () => {
+  createEffect(() => {
+    setSession(supabase.auth.session());
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    })
+  })
+
   return (
-    <div class={styles.App}>
-      <header class={styles.header}>
-        <img src={logo} class={styles.logo} alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          class={styles.link}
-          href="https://github.com/solidjs/solid"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn Solid
-        </a>
-      </header>
+    <div style={{ width: "100%", padding: '50px 0 100px 0' }}>
+      <Box sx={{ width: "100%", minWidth: "320px", display: "flex", justifyContent: "center" }}>
+        {!session() ? <Auth /> : <Account key={session()!.user!.id} session={session()!} />}
+      </Box>
     </div>
   );
 };
-
-export default App;
