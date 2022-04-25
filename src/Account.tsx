@@ -1,6 +1,12 @@
 import { Session } from '@supabase/supabase-js';
-import { createSignal, createEffect, Accessor } from 'solid-js';
+import { createSignal, createEffect, Accessor, Show } from 'solid-js';
 import { supabase } from './supabaseClient';
+import Alert, { AlertColor } from '@suid/material/Alert';
+import Box from '@suid/material/Box';
+import Button from '@suid/material/Button';
+import Stack from '@suid/material/Stack';
+import TextField from '@suid/material/TextField';
+import Typography from '@suid/material/Typography';
 import Avatar from './Avatar';
 
 type Props = {
@@ -12,12 +18,17 @@ type UpdateParams = {
   website: Accessor<string>,
   avatarUrl: string
 }
+type Message = {
+  severity: AlertColor,
+  text: string
+}
 
 const Account = (props: Props) => {
   const [loading, setLoading] = createSignal<boolean>(true);
   const [username, setUsername] = createSignal<string>('');
   const [website, setWebsite] = createSignal<string>('');
   const [avatarUrl, setAvatarUrl] = createSignal<string>('');
+  const [message, setMessage] = createSignal<Message>({ severity: 'info', text: '' });
 
   createEffect(() => {
     props.session;
@@ -45,7 +56,7 @@ const Account = (props: Props) => {
         setAvatarUrl(data.avatar_url);
       }
     } catch (error) {
-      alert(error.message);
+      setMessage({ severity: 'error', text: error.error_description || error.message });
     } finally {
       setLoading(false);
     }
@@ -71,6 +82,7 @@ const Account = (props: Props) => {
       if (error) {
         throw error;
       }
+      setMessage({ severity: 'success', text: 'プロフィールを更新しました。' });
     } catch (error) {
       alert(error.message);
     } finally {
@@ -80,61 +92,78 @@ const Account = (props: Props) => {
 
   return (
     <div aria-live="polite">
-      {loading() ? (
-        'Saving ...'
-      ) : (
-        <>
-          <div className="form-widget">
-            <Avatar
-              url={avatarUrl()}
-              size={"150px"}
-              onUpload={(url: string) => {
-                setAvatarUrl(url);
-                updateProfile({ username, website, avatarUrl: url });
-              }}
-            />
+      <Box sx={{ width: "100%", minWidth: "320px", display: "flex", justifyContent: "center" }}>
+        <Stack spacing={2} direction="column">
+          <div style={{ padding: "10px 0 0 0" }}>
+            {loading() ? (
+              <Typography variant="body1" gutterBottom>
+                保存中...
+              </Typography>
+            ) : (
+              <>
+                <Avatar
+                  url={avatarUrl()}
+                  size={"150px"}
+                  onUpload={(url: string) => {
+                    setAvatarUrl(url);
+                    updateProfile({ username, website, avatarUrl: url });
+                  }}
+                />
+                <form onSubmit={updateProfile}>
+                  <Typography variant="body1" gutterBottom style={{ padding: "10px 0 0 0" }}>
+                    Email: {props.session.user!.email}
+                  </Typography>
+                  <div style={{ padding: "10px 0 0 0" }}>
+                    <TextField
+                      id="username"
+                      label="Name"
+                      helperText="お名前（またはニックネームなど）を3文字以上で入力してください"
+                      type="text"
+                      value={username()}
+                      onChange={(event, value) => {
+                        setUsername(value);
+                      }}
+                      style="width: 100%"
+                    />
+                  </div>
+                  <div style={{ padding: "10px 0 0 0" }}>
+                    <TextField
+                      id="website"
+                      label="WebサイトURL"
+                      helperText="お持ちのWebサイト・ホームページなどのURLを入力してください"
+                      type="url"
+                      value={website()}
+                      onChange={(event, value) => {
+                        setWebsite(value);
+                      }}
+                      style="width: 100%"
+                    />
+                  </div>
+                  <div style={{ padding: "10px 0 0 0" }}>
+                    <Button
+                      variant="contained"
+                      type="submit"
+                      disabled={loading()}
+                      style={{display: "flex", justifyContent: "center"}}
+                      aria-live="polite"
+                      sx={{width: "100%"}}
+                    >
+                      プロフィール更新
+                    </Button>
+                  </div>
+                  <div style={{ padding: "10px 0 0 0" }}>
+                    <Show when={message().text !== ''} fallback={<></>}>
+                      <Alert severity={message().severity}>
+                        {message().text}
+                      </Alert>
+                    </Show>
+                  </div>
+                </form>
+              </>
+            )}
           </div>
-          <form onSubmit={updateProfile} className="form-widget">
-            <div>Email: {props.session.user!.email}</div>
-            <div>
-              <label htmlFor="username">Name</label>
-              <input
-                id="username"
-                type="text"
-                value={username()}
-                onChange={(e) => {
-                  if (!(e.target instanceof HTMLInputElement)) {
-                    return;
-                  }
-                  setUsername(e.target.value);
-                }}
-              />
-            </div>
-            <div>
-              <label htmlFor="website">Website</label>
-              <input
-                id="website"
-                type="url"
-                value={website()}
-                onChange={(e) => {
-                  if (!(e.target instanceof HTMLInputElement)) {
-                    return;
-                  }
-                  setWebsite(e.target.value);
-                }}
-              />
-            </div>
-            <div>
-              <button className="button block primary" disabled={loading()}>
-                Update profile
-              </button>
-            </div>
-          </form>
-        </>
-      )}
-      <button type="button" className="button block" onClick={() => supabase.auth.signOut()}>
-        Sign Out
-      </button>
+        </Stack>
+      </Box>
     </div>
   );
 }

@@ -1,6 +1,9 @@
 import { createEffect, createSignal } from 'solid-js';
 import { supabase } from './supabaseClient';
-// import VisuallyHidden from '@reach/visually-hidden';
+import Button from '@suid/material/Button';
+import Stack from '@suid/material/Stack';
+import Typography from '@suid/material/Typography';
+
 type Props = {
   url: string,
   size: string,
@@ -71,23 +74,29 @@ export default (props: Props | null) => {
         className="avatar image"
         style={{ height: props!.size, width: props!.size }}
       />
-      {uploading() ? (
-        'Uploading...'
+        {uploading() ? (
+          <div>
+          <Typography variant="body1" gutterBottom>
+            アップロード中...
+          </Typography>
+        </div>
       ) : (
-        <>
-          <label className="button primary block" htmlFor="single">
-            Upload
+        <Stack direction="row" spacing={2} sx={{ display: "flex", justifyContent: "center" }}>
+          <label htmlFor="contained-button-file">
+            <span style="display:none">
+              <input
+                type="file"
+                id="contained-button-file"
+                accept="image/*"
+                onChange={uploadAvatar}
+                disabled={uploading()}
+              />
+            </span>
+            <Button variant="contained" component="span">
+              アップロード
+            </Button>
           </label>
-          <span style="display:none">
-            <input
-              type="file"
-              id="single"
-              accept="image/*"
-              onChange={uploadAvatar}
-              disabled={uploading()}
-            />
-          </span>
-        </>
+        </Stack>
       )}
     </div>
   )
