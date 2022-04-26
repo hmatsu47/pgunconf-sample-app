@@ -18,10 +18,12 @@ export default (props: Props | null) => {
     if (!props) {
       return;
     }
+    // 画像 URL が指定されていたらアバター画像をダウンロード
     if (props.url) downloadImage(props.url);
   })
 
   const downloadImage = async (path: string) => {
+    // アバター画像をダウンロード（ストレージから）
     try {
       const { data, error } = await supabase.storage.from('avatars').download(path);
       if (error) {
@@ -35,13 +37,14 @@ export default (props: Props | null) => {
   }
 
   const uploadAvatar = async (event: Event) => {
+    // アバター画像をアップロード
     try {
       setUploading(true);
 
       const target = event.target as HTMLInputElement;
       const files = target.files as FileList;
       if (files.length === 0) {
-        throw new Error('You must select an image to upload.');
+        throw new Error('アップロードする画像を正しく選択してください');
       }
 
       const file = files[0];
@@ -66,6 +69,7 @@ export default (props: Props | null) => {
     }
   }
 
+  // アバター画像とアップロードコントロールを表示
   return (
     <div style={{ width: props!.size }} aria-live="polite">
       <img

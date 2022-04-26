@@ -1,13 +1,14 @@
 import { Session } from '@supabase/supabase-js';
 import { createSignal, createEffect, Accessor, Show } from 'solid-js';
 import { supabase } from './supabaseClient';
-import Alert, { AlertColor } from '@suid/material/Alert';
+import Alert from '@suid/material/Alert';
 import Box from '@suid/material/Box';
 import Button from '@suid/material/Button';
 import Stack from '@suid/material/Stack';
 import TextField from '@suid/material/TextField';
 import Typography from '@suid/material/Typography';
 import Avatar from './Avatar';
+import { Message } from './types/common';
 
 type Props = {
   key: string,
@@ -18,13 +19,10 @@ type UpdateParams = {
   website: Accessor<string>,
   avatarUrl: string
 }
-type Message = {
-  severity: AlertColor,
-  text: string
-}
 
 const Account = (props: Props) => {
   const [loading, setLoading] = createSignal<boolean>(true);
+  const [updating, setUpdating] = createSignal<boolean>(false);
   const [username, setUsername] = createSignal<string>('');
   const [website, setWebsite] = createSignal<string>('');
   const [avatarUrl, setAvatarUrl] = createSignal<string>('');
@@ -36,6 +34,7 @@ const Account = (props: Props) => {
   })
 
   const getProfile = async () => {
+    // プロフィール読み取り（DB から）
     try {
       setLoading(true);
       const user = supabase.auth.user();
@@ -63,7 +62,9 @@ const Account = (props: Props) => {
   }
 
   const updateProfile = async (e: UpdateParams | { submitter: HTMLElement; }) => {
+    // プロフィール更新（DB へ）
     try {
+      setUpdating(true);
       setLoading(true);
       const user = supabase.auth.user();
 
@@ -87,9 +88,11 @@ const Account = (props: Props) => {
       alert(error.message);
     } finally {
       setLoading(false);
+      setUpdating(false);
     }
   }
 
+  // プロフィール画面を表示
   return (
     <div aria-live="polite">
       <Box sx={{ width: "100%", minWidth: "320px", display: "flex", justifyContent: "center" }}>
@@ -97,7 +100,7 @@ const Account = (props: Props) => {
           <div style={{ padding: "10px 0 0 0" }}>
             {loading() ? (
               <Typography variant="body1" gutterBottom>
-                保存中...
+                {updating() ? '保存中...' : '読み込み中...'}
               </Typography>
             ) : (
               <>

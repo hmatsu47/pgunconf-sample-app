@@ -14,12 +14,13 @@ export default () => {
 
   createEffect(() => {
     setSession(supabase.auth.session());
-
+    // 認証状態が変化したら Session を更新
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     })
   })
 
+  // タイトルバー＋コンテンツを表示（コンテンツ：未認証のときはメールアドレス入力画面・認証済みのときはプロフィール画面）
   return (
     <>
       <link

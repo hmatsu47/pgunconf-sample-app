@@ -1,16 +1,12 @@
 import { createSignal, Show } from 'solid-js';
 import { supabase } from './supabaseClient';
-import Alert, { AlertColor } from '@suid/material/Alert';
+import Alert from '@suid/material/Alert';
 import Box from '@suid/material/Box';
 import Button from '@suid/material/Button';
 import Stack from '@suid/material/Stack';
 import TextField from '@suid/material/TextField';
 import Typography from '@suid/material/Typography';
-
-type Message = {
-  severity: AlertColor,
-  text: string
-}
+import { Message } from './types/common';
 
 export default function Auth() {
   const [loading, setLoading] = createSignal<boolean>(false);
@@ -19,7 +15,7 @@ export default function Auth() {
 
   const handleLogin = async (event: Event) => {
     event.preventDefault();
-
+    // マジックリンクを送信
     try {
       setLoading(true);
       const { error } = await supabase.auth.signIn({ email: email() });
@@ -32,6 +28,7 @@ export default function Auth() {
     }
   }
 
+  // メールアドレス入力画面を表示（マジックリンク送信用）
   return (
     <div aria-live="polite">
       <Box sx={{ width: "100%", maxWidth: "480px", minWidth: "300px" }}>
