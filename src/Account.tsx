@@ -1,4 +1,3 @@
-import { Session } from '@supabase/supabase-js';
 import { createSignal, createEffect, Accessor, Show } from 'solid-js';
 import { supabase } from './supabaseClient';
 import Alert from '@suid/material/Alert';
@@ -8,19 +7,15 @@ import Stack from '@suid/material/Stack';
 import TextField from '@suid/material/TextField';
 import Typography from '@suid/material/Typography';
 import Avatar from './Avatar';
-import { Message } from './types/common';
+import { Message, PropsFromApp } from './types/common';
 
-type Props = {
-  key: string,
-  session: Session
-}
 type UpdateParams = {
   username: Accessor<string>,
   website: Accessor<string>,
   avatarUrl: string
 }
 
-const Account = (props: Props) => {
+const Account = (props: PropsFromApp) => {
   const [loading, setLoading] = createSignal<boolean>(true);
   const [updating, setUpdating] = createSignal<boolean>(false);
   const [username, setUsername] = createSignal<string>('');
