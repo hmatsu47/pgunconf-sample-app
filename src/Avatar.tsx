@@ -87,7 +87,9 @@ export default (props: Props | null) => {
               justifyContent: "center"
             }}
           >
-            No image
+            <Typography variant="body1">
+              No image
+            </Typography>
           </Box>
         ) : (
           <img

@@ -99,19 +99,30 @@ const Account = (props: PropsFromApp) => {
               </Typography>
             ) : (
               <>
-                <Avatar
-                  url={avatarUrl()}
-                  size={"150px"}
-                  onUpload={(url: string) => {
-                    setAvatarUrl(url);
-                    updateProfile({ username, website, avatarUrl: url });
-                  }}
-                />
-                <form onSubmit={updateProfile}>
-                  <Typography variant="body1" gutterBottom style={{ padding: "10px 0 0 0" }}>
-                    Email: {props.session.user!.email}
+                <Stack direction="row">
+                  <Avatar
+                    url={avatarUrl()}
+                    size={"150px"}
+                    onUpload={(url: string) => {
+                      setAvatarUrl(url);
+                      updateProfile({ username, website, avatarUrl: url });
+                    }}
+                  />
+                  <Typography variant="body1"
+                    sx={{
+                      padding: "50px 0 0 0",
+                      flexGrow: 1,
+                      display: "flex",
+                      justifyContent: "center"
+                    }}>
+                    <div>
+                      Email:<br/>
+                      {props.session.user!.email}
+                    </div>
                   </Typography>
-                  <div style={{ padding: "10px 0 0 0" }}>
+                </Stack>
+                <form onSubmit={updateProfile}>
+                  <div style={{ padding: "20px 0 0 0" }}>
                     <TextField
                       id="username"
                       label="Name"
@@ -124,7 +135,7 @@ const Account = (props: PropsFromApp) => {
                       style="width: 100%"
                     />
                   </div>
-                  <div style={{ padding: "10px 0 0 0" }}>
+                  <div style={{ padding: "20px 0 0 0" }}>
                     <TextField
                       id="website"
                       label="WebサイトURL"
@@ -142,7 +153,7 @@ const Account = (props: PropsFromApp) => {
                       variant="contained"
                       type="submit"
                       disabled={loading()}
-                      style={{display: "flex", justifyContent: "center"}}
+                      style={{ display: "flex", justifyContent: "center" }}
                       aria-live="polite"
                       sx={{width: "100%"}}
                     >
