@@ -3,6 +3,8 @@ import { supabase } from './supabaseClient';
 import Button from '@suid/material/Button';
 import Stack from '@suid/material/Stack';
 import Typography from '@suid/material/Typography';
+import Box from '@suid/material/Box';
+import useTheme from '@suid/material/styles/useTheme';
 
 type Props = {
   url: string,
@@ -32,7 +34,7 @@ export default (props: Props | null) => {
       const url = URL.createObjectURL(data);
       setAvatarUrl(url);
     } catch (error) {
-      console.log('Error downloading image: ', error.message);
+      console.log('アバター画像のダウンロードに失敗しました : ', error.message);
     }
   }
 
@@ -69,23 +71,39 @@ export default (props: Props | null) => {
     }
   }
 
+  const theme = useTheme();
   // アバター画像とアップロードコントロールを表示
   return (
     <div style={{ width: props!.size }} aria-live="polite">
-      <img
-        src={avatarUrl() !== '' ? avatarUrl() : `https://place-hold.it/${props!.size}x${props!.size}`}
-        alt={avatarUrl() !== '' ? 'Avatar' : 'No image'}
-        className="avatar image"
-        style={{ height: props!.size, width: props!.size }}
-      />
+      <Stack direction="column" spacing={2} sx={{ display: "flex", justifyContent: "center" }}>
+        {avatarUrl() === '' ? (
+          <Box
+            sx={{
+              height: props!.size,
+              width: props!.size,
+              backgroundColor: theme.palette.grey[100],
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+          >
+            No image
+          </Box>
+        ) : (
+          <img
+            src={avatarUrl()}
+            alt={'Avatar'}
+            className="avatar image"
+            style={{ height: props!.size, width: props!.size }}
+          />
+        )}
         {uploading() ? (
-          <div>
-          <Typography variant="body1" gutterBottom>
-            アップロード中...
-          </Typography>
-        </div>
-      ) : (
-        <Stack direction="row" spacing={2} sx={{ display: "flex", justifyContent: "center" }}>
+            <div>
+            <Typography variant="body1" gutterBottom>
+              アップロード中...
+            </Typography>
+          </div>
+        ) : (
           <label htmlFor="contained-button-file">
             <span style="display:none">
               <input
@@ -96,12 +114,12 @@ export default (props: Props | null) => {
                 disabled={uploading()}
               />
             </span>
-            <Button variant="contained" component="span">
+            <Button variant="contained" component="span" style="width: 100%">
               アップロード
             </Button>
           </label>
-        </Stack>
-      )}
+        )}
+      </Stack>
     </div>
   )
 }
