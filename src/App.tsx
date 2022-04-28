@@ -1,8 +1,11 @@
 import { createSignal, createEffect, Show } from 'solid-js';
 import { supabase } from './supabaseClient';
 import Alert from '@suid/material/Alert';
+import AccountCircle from '@suid/icons-material/AccountCircle';
 import Box from '@suid/material/Box';
-import Button from "@suid/material/Button";
+import IconButton from '@suid/material/IconButton';
+import Logout from '@suid/icons-material/Logout';
+import ViewList from '@suid/icons-material/ViewList';
 import Auth from './Auth';
 import Contents from './Contents';
 import { Session } from '@supabase/supabase-js';
@@ -67,24 +70,38 @@ export default () => {
                 Supabase (RLS) + SolidJS のサンプル
               </Typography>
               <Show when={session() && profiled()} fallback={<></>}>
-                <Button
+                <IconButton
+                  size="large"
+                  edge="start"
                   color="inherit"
+                  aria-label="list"
+                  sx={{ mr: 2 }}
                   onClick={() => setRoute('list')}
                 >
-                  List
-                </Button>
-                <Button
+                  <ViewList />
+                </IconButton>
+              </Show>
+              <Show when={session()} fallback={<></>}>
+                <IconButton
+                  size="large"
+                  edge="start"
                   color="inherit"
+                  aria-label="profile"
+                  sx={{ mr: 2 }}
                   onClick={() => setRoute('profile')}
                 >
-                  Profile
-                </Button>
-                <Button
+                  <AccountCircle />
+                </IconButton>
+                <IconButton
+                  size="large"
+                  edge="start"
                   color="inherit"
+                  aria-label="sign out"
+                  sx={{ mr: 2 }}
                   onClick={() => supabase.auth.signOut()}
                 >
-                  Sign Out
-                </Button>
+                  <Logout />
+                </IconButton>
               </Show>
             </Toolbar>
           </AppBar>
