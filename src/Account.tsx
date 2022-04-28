@@ -95,7 +95,7 @@ const Account = (props: PropsFromApp) => {
           <div style={{ padding: "10px 0 0 0" }}>
             {loading() ? (
               <Typography variant="body1" gutterBottom>
-                {updating() ? '保存中...' : '読み込み中...'}
+                {updating() ? '保存中...' : ''}
               </Typography>
             ) : (
               <>

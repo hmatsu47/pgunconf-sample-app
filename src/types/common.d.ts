@@ -9,9 +9,10 @@ export declare type Message = {
 // App から引き継ぐ Props
 type PropsFromApp = {
   key: string,
-  session: Session
+  session: Session,
+  route?: string
 }
-// 記事
+// 投稿
 export declare type Article = {
     id?: number,
     updateAt: Date,
