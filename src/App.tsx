@@ -5,7 +5,7 @@ import AccountCircle from '@suid/icons-material/AccountCircle';
 import Box from '@suid/material/Box';
 import IconButton from '@suid/material/IconButton';
 import Logout from '@suid/icons-material/Logout';
-import ViewList from '@suid/icons-material/ViewList';
+import ViewListIcon from '@suid/icons-material/ViewList';
 import Auth from './Auth';
 import Contents from './Contents';
 import { Session } from '@supabase/supabase-js';
@@ -37,7 +37,7 @@ export default () => {
     }
     try {
 
-      let { data, error, status } = await supabase
+      const { data, error, status } = await supabase
         .from('profiles')
         .select(`username`)
         .eq('id', session()!.user!.id)
@@ -79,7 +79,7 @@ export default () => {
                   sx={{ mr: 2 }}
                   onClick={() => setRoute('list')}
                 >
-                  <ViewList />
+                  <ViewListIcon />
                 </IconButton>
               </Show>
               <Show when={session()} fallback={<></>}>

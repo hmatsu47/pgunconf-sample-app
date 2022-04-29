@@ -5,6 +5,9 @@ import Box from '@suid/material/Box';
 import Card from '@suid/material/Card';
 import CardActions from '@suid/material/CardActions';
 import CardContent from '@suid/material/CardContent';
+import DeleteIcon from '@suid/icons-material/Delete';
+import EditIcon from '@suid/icons-material/Edit';
+import IconButton from '@suid/material/IconButton';
 import Stack from '@suid/material/Stack';
 import Typography from '@suid/material/Typography';
 import { Article, Message, PropsFromApp } from './types/common';
@@ -19,10 +22,11 @@ const List = (props: PropsFromApp) => {
   })
 
   const getArticles = async () => {
+    // 投稿一覧読み取り（DB から）
     try {
       setLoading(true);
 
-      let { data, error, status } = await supabase
+      const { data, error, status } = await supabase
         .from('articles')
         .select(`
           id,
@@ -47,7 +51,7 @@ const List = (props: PropsFromApp) => {
             title: obj.title,
             note: (obj.note ? obj.note : ''),
             noteType: obj.note_type,
-            userId: obj.user_id,
+            userId: obj.userid,
             userName: (obj.profiles.username ? obj.profiles.username : '')
           };
           return article;
@@ -59,6 +63,35 @@ const List = (props: PropsFromApp) => {
     } finally {
       setLoading(false);
     }
+  }
+
+  const deleteArticle = async (id: number) => {
+    // 投稿削除（DB から）
+    try {
+
+      const { error } = await supabase
+        .from('articles')
+        .delete({ returning: 'minimal'})
+        .match({ id: id });
+
+      if (error) {
+        throw error;
+      }
+      getArticles();
+      setMessage({ severity: 'success', text: '投稿を削除しました' });
+    } catch (error) {
+      setMessage({ severity: 'error', text: error.error_description || error.message });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const deleteArticleAction = (id: number) => {
+    // 投稿の削除（確認）
+    if (!confirm('本当に削除しますか？')) {
+      return;
+    }
+    deleteArticle(id);
   }
 
   // 投稿一覧画面を表示
@@ -101,6 +134,25 @@ const List = (props: PropsFromApp) => {
                               </Typography>
                             }
                           </For>
+                          <CardActions>
+                            <IconButton
+                              aria-label="edit"
+                              disabled={
+                                article.userId !== props.session.user!.id && article.noteType !== 3
+                              }
+                            >
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton
+                              aria-label="delete"
+                              onClick={() => deleteArticleAction(article.id!)}
+                              disabled={
+                                article.userId !== props.session.user!.id
+                              }
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </CardActions>
                         </CardContent>
                       </Card>
                     </Box>
