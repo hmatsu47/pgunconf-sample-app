@@ -10,6 +10,7 @@ import Auth from './Auth';
 import Contents from './Contents';
 import { Session } from '@supabase/supabase-js';
 import AppBar from '@suid/material/AppBar';
+import Stack from '@suid/material/Stack';
 import Toolbar from '@suid/material/Toolbar';
 import Typography from '@suid/material/Typography';
 import { Message } from './types/common';
@@ -106,14 +107,14 @@ export default () => {
             </Toolbar>
           </AppBar>
         <Box sx={{ width: "100%", minWidth: "320px", display: "flex", justifyContent: "center" }}>
-          {!session() ? <Auth /> : <Contents key={session()!.user!.id} session={session()!} route={route()} />}
-          <div style={{ padding: "10px 0 0 0" }}>
+          <Stack spacing={2} direction="column">
+            {!session() ? <Auth /> : <Contents key={session()!.user!.id} session={session()!} route={route()} />}
             <Show when={message().text !== ''} fallback={<></>}>
               <Alert severity={message().severity}>
                 {message().text}
               </Alert>
             </Show>
-          </div>
+          </Stack>
         </Box>
       </Box>
     </>
