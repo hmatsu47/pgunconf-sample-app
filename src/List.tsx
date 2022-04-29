@@ -1,4 +1,4 @@
-import { createSignal, createEffect, For, Show, Suspense } from 'solid-js';
+import { createSignal, createEffect, For, Show } from 'solid-js';
 import { supabase } from './supabaseClient';
 import Alert from '@suid/material/Alert';
 import Box from '@suid/material/Box';
