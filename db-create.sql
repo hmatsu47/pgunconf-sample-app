@@ -70,3 +70,5 @@ create policy "Users can update their own articles or free-updatable articles."
 create policy "Users can delete their own articles."
   on articles for delete
   using ( ( auth.uid() = articles.userid ) );
+
+alter table articles add foreign key (userid) references profiles;

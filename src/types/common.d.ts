@@ -15,9 +15,10 @@ type PropsFromApp = {
 // 投稿
 export declare type Article = {
     id?: number,
-    updateAt: Date,
+    updatedAt: Date,
     title: string,
     note?: string,
     noteType: number,
-    userId: string
+    userId: string,
+    userName?: string
 }

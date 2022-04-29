@@ -25,6 +25,7 @@ const Account = (props: PropsFromApp) => {
 
   createEffect(() => {
     props.session;
+    props.route;
     getProfile();
   })
 
