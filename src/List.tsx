@@ -15,8 +15,6 @@ const List = (props: PropsFromApp) => {
   const [message, setMessage] = createSignal<Message>({ severity: 'info', text: '' });
 
   createEffect(() => {
-    props.session;
-    props.route;
     getArticles();
   })
 
