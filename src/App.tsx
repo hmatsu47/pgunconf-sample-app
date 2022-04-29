@@ -1,10 +1,11 @@
 import { createSignal, createEffect, Show } from 'solid-js';
 import { supabase } from './supabaseClient';
 import Alert from '@suid/material/Alert';
-import AccountCircle from '@suid/icons-material/AccountCircle';
+import AccountCircleIcon from '@suid/icons-material/AccountCircle';
+import AddCircleIcon from '@suid/icons-material/AddCircle';
 import Box from '@suid/material/Box';
 import IconButton from '@suid/material/IconButton';
-import Logout from '@suid/icons-material/Logout';
+import LogoutIcon from '@suid/icons-material/Logout';
 import ViewListIcon from '@suid/icons-material/ViewList';
 import Auth from './Auth';
 import Contents from './Contents';
@@ -71,6 +72,15 @@ export default () => {
                 Supabase (RLS) + SolidJS のサンプル
               </Typography>
               <Show when={session() && profiled()} fallback={<></>}>
+              <IconButton
+                  size="large"
+                  edge="start"
+                  color="inherit"
+                  aria-label="add"
+                  sx={{ mr: 2 }}
+                >
+                  <AddCircleIcon />
+                </IconButton>
                 <IconButton
                   size="large"
                   edge="start"
@@ -91,7 +101,7 @@ export default () => {
                   sx={{ mr: 2 }}
                   onClick={() => setRoute('profile')}
                 >
-                  <AccountCircle />
+                  <AccountCircleIcon />
                 </IconButton>
                 <IconButton
                   size="large"
@@ -101,7 +111,7 @@ export default () => {
                   sx={{ mr: 2 }}
                   onClick={() => supabase.auth.signOut()}
                 >
-                  <Logout />
+                  <LogoutIcon />
                 </IconButton>
               </Show>
             </Toolbar>
