@@ -1,4 +1,4 @@
-import { createSignal, Show } from 'solid-js';
+import { createSignal, onMount, Show } from 'solid-js';
 import { supabase } from './supabaseClient';
 import Alert from '@suid/material/Alert';
 import Box from '@suid/material/Box';
@@ -12,6 +12,11 @@ export default function Auth() {
   const [loading, setLoading] = createSignal<boolean>(false);
   const [email, setEmail] = createSignal<string>('');
   const [message, setMessage] = createSignal<Message>({ severity: 'info', text: '' });
+
+  onMount(() => {
+    const element = document.getElementById('email');
+    element?.focus();
+  })
 
   const handleLogin = async (event: Event) => {
     event.preventDefault();
