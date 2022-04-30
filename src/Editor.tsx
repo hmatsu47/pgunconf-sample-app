@@ -62,7 +62,7 @@ export default (props: Props) => {
 
       const { error } = await supabase
         .from('articles')
-        .insert(updates);
+        .insert(updates, { returning: 'minimal' });
 
       if (error) {
         throw error;
