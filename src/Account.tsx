@@ -32,6 +32,14 @@ const Account = (props: Props) => {
     getProfile();
   })
 
+  createEffect(() => {
+    if (!loading()) {
+      const element = document.getElementById('username');
+      element?.focus();
+      console.log(element);
+    }
+  })
+
   const getProfile = async () => {
     // プロフィール読み取り（DB から）
     try {
