@@ -47,6 +47,7 @@ export default function Auth() {
           <form onSubmit={handleLogin}>
             <Stack spacing={2} direction="column">
               <TextField
+                required
                 id="email"
                 label="メールアドレス"
                 helperText="メールアドレスを入力してください"

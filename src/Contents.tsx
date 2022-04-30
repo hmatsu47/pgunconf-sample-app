@@ -1,9 +1,15 @@
-import { createEffect, Switch, Match } from 'solid-js';
-import { PropsFromApp } from './types/common';
+import { createEffect, Match, Switch } from 'solid-js';
+import { Session } from '@supabase/supabase-js';
 import Account from './Account';
 import List from './List';
 
-const Contents = (props: PropsFromApp) => {
+type Props = {
+  session: Session,
+  route: string,
+  getProfiled: () => void
+}
+
+const Contents = (props: Props) => {
 
   createEffect(() => {
     props.route;
@@ -13,11 +19,11 @@ const Contents = (props: PropsFromApp) => {
   return (
     <div aria-live="polite">
       <Switch fallback={<></>}>
-        <Match when={props.route! === 'profile'}>
-          <Account key={props.session.user!.id} session={props.session} />
+        <Match when={props.route === 'profile'}>
+          <Account session={props.session} getProfiled={() => props.getProfiled()}/>
         </Match>
-        <Match when={props.route! === 'list'}>
-          <List key={props.session.user!.id} session={props.session} />
+        <Match when={props.route === 'list'}>
+          <List session={props.session} />
         </Match>
       </Switch>
     </div>

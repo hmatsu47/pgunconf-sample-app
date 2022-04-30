@@ -1,4 +1,5 @@
 import { createSignal, createEffect, Accessor, Show } from 'solid-js';
+import { Session } from '@supabase/supabase-js';
 import { supabase } from './supabaseClient';
 import Alert from '@suid/material/Alert';
 import Box from '@suid/material/Box';
@@ -7,15 +8,19 @@ import Stack from '@suid/material/Stack';
 import TextField from '@suid/material/TextField';
 import Typography from '@suid/material/Typography';
 import Avatar from './Avatar';
-import { Message, PropsFromApp } from './types/common';
+import { Message } from './types/common';
 
+type Props = {
+  session: Session,
+  getProfiled: () => void
+}
 type UpdateParams = {
   username: Accessor<string>,
   website: Accessor<string>,
   avatarUrl: string
 }
 
-const Account = (props: PropsFromApp) => {
+const Account = (props: Props) => {
   const [loading, setLoading] = createSignal<boolean>(true);
   const [updating, setUpdating] = createSignal<boolean>(false);
   const [username, setUsername] = createSignal<string>('');
@@ -67,7 +72,7 @@ const Account = (props: PropsFromApp) => {
         username: username(),
         website: website(),
         avatar_url: avatarUrl(),
-        updated_at: new Date(),
+        updated_at: new Date()
       };
 
       const { error } = await supabase.from('profiles').upsert(updates, {
@@ -78,8 +83,9 @@ const Account = (props: PropsFromApp) => {
         throw error;
       }
       setMessage({ severity: 'success', text: 'プロフィールを更新しました。' });
+      props.getProfiled();
     } catch (error) {
-      alert(error.message);
+      setMessage({ severity: 'error', text: `エラーが発生しました : ${error.message}` });
     } finally {
       setLoading(false);
       setUpdating(false);
@@ -89,7 +95,7 @@ const Account = (props: PropsFromApp) => {
   // プロフィール画面を表示
   return (
     <div aria-live="polite">
-      <Box sx={{ width: "100%", minWidth: "320px", display: "flex", justifyContent: "center" }}>
+      <Box sx={{ width: "100%", minWidth: "320px", maxWidth: "420px", display: "flex", justifyContent: "center" }}>
         <Stack spacing={2} direction="column">
           <div style={{ padding: "10px 0 0 0" }}>
             {loading() ? (
@@ -105,6 +111,9 @@ const Account = (props: PropsFromApp) => {
                     onUpload={(url: string) => {
                       setAvatarUrl(url);
                       updateProfile({ username, website, avatarUrl: url });
+                    }}
+                    setMessage={(message: Message) => {
+                      setMessage(message);
                     }}
                   />
                   <Typography variant="body1"
@@ -123,6 +132,7 @@ const Account = (props: PropsFromApp) => {
                 <form onSubmit={updateProfile}>
                   <div style={{ padding: "20px 0 0 0" }}>
                     <TextField
+                      required
                       id="username"
                       label="Name"
                       helperText="お名前（またはニックネームなど）を3文字以上で入力してください"

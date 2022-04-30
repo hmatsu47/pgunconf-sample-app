@@ -5,11 +5,13 @@ import Stack from '@suid/material/Stack';
 import Typography from '@suid/material/Typography';
 import Box from '@suid/material/Box';
 import useTheme from '@suid/material/styles/useTheme';
+import { Message } from './types/common';
 
 type Props = {
   url: string,
   size: string,
-  onUpload: (url: string) => void
+  onUpload: (url: string) => void,
+  setMessage: (message: Message) => void
 }
 
 export default (props: Props | null) => {
@@ -34,7 +36,10 @@ export default (props: Props | null) => {
       const url = URL.createObjectURL(data);
       setAvatarUrl(url);
     } catch (error) {
-      console.log('アバター画像のダウンロードに失敗しました : ', error.message);
+      if (!props) {
+        return;
+      }
+      props.setMessage({ severity: 'error', text: `アバター画像のダウンロードに失敗しました : ${error.message}` });
     }
   }
 
@@ -65,7 +70,10 @@ export default (props: Props | null) => {
       }
       props.onUpload(filePath);
     } catch (error) {
-      alert(error.message);
+      if (!props) {
+        return;
+      }
+      props.setMessage({ severity: 'error', text: error.message });
     } finally {
       setUploading(false);
     }

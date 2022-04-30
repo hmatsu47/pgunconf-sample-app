@@ -2,7 +2,6 @@ import { createSignal, createEffect, Show } from 'solid-js';
 import { supabase } from './supabaseClient';
 import Alert from '@suid/material/Alert';
 import AccountCircleIcon from '@suid/icons-material/AccountCircle';
-import AddCircleIcon from '@suid/icons-material/AddCircle';
 import Box from '@suid/material/Box';
 import IconButton from '@suid/material/IconButton';
 import LogoutIcon from '@suid/icons-material/Logout';
@@ -49,7 +48,9 @@ export default () => {
       }
       if (data) {
         setProfiled(true);
-        setRoute('list');
+        if (route() === '') {
+          setRoute('list');
+        }
       } else {
         setProfiled(false);
         setRoute('profile');
@@ -72,15 +73,6 @@ export default () => {
                 Supabase (RLS) + SolidJS のサンプル
               </Typography>
               <Show when={session() && profiled()} fallback={<></>}>
-              <IconButton
-                  size="large"
-                  edge="start"
-                  color="inherit"
-                  aria-label="add"
-                  sx={{ mr: 2 }}
-                >
-                  <AddCircleIcon />
-                </IconButton>
                 <IconButton
                   size="large"
                   edge="start"
@@ -118,7 +110,7 @@ export default () => {
           </AppBar>
         <Box sx={{ width: "100%", minWidth: "320px", display: "flex", justifyContent: "center" }}>
           <Stack spacing={2} direction="column">
-            {!session() ? <Auth /> : <Contents key={session()!.user!.id} session={session()!} route={route()} />}
+            {!session() ? <Auth /> : <Contents session={session()!} route={route()} getProfiled={() => getProfiled()}/>}
             <Show when={message().text !== ''} fallback={<></>}>
               <Alert severity={message().severity}>
                 {message().text}

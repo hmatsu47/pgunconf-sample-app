@@ -1,4 +1,5 @@
 import { createSignal, createEffect, For, Show } from 'solid-js';
+import { Session } from '@supabase/supabase-js';
 import { supabase } from './supabaseClient';
 import Alert from '@suid/material/Alert';
 import Box from '@suid/material/Box';
@@ -10,10 +11,16 @@ import EditIcon from '@suid/icons-material/Edit';
 import IconButton from '@suid/material/IconButton';
 import Stack from '@suid/material/Stack';
 import Typography from '@suid/material/Typography';
-import { Article, Message, PropsFromApp } from './types/common';
+import Editor from './Editor';
+import { Article, Message } from './types/common';
 
-const List = (props: PropsFromApp) => {
+type Props = {
+  session: Session
+}
+
+const List = (props: Props) => {
   const [loading, setLoading] = createSignal<boolean>(false);
+  const [article, setArticle] = createSignal<Article | null>(null);
   const [articles, setArticles] = createSignal<Article[]>();
   const [message, setMessage] = createSignal<Message>({ severity: 'info', text: '' });
 
@@ -57,9 +64,10 @@ const List = (props: PropsFromApp) => {
           return article;
         })
         setArticles(listArticles);
+        setArticle(null);
       }
     } catch (error) {
-      setMessage({ severity: 'error', text: error.error_description || error.message });
+      setMessage({ severity: 'error', text: `エラーが発生しました : ${error.error_description || error.message}` });
     } finally {
       setLoading(false);
     }
@@ -71,7 +79,7 @@ const List = (props: PropsFromApp) => {
 
       const { error } = await supabase
         .from('articles')
-        .delete({ returning: 'minimal'})
+        .delete({ returning: 'minimal' })
         .match({ id: id });
 
       if (error) {
@@ -80,9 +88,7 @@ const List = (props: PropsFromApp) => {
       getArticles();
       setMessage({ severity: 'success', text: '投稿を削除しました' });
     } catch (error) {
-      setMessage({ severity: 'error', text: error.error_description || error.message });
-    } finally {
-      setLoading(false);
+      setMessage({ severity: 'error', text: `エラーが発生しました : ${error.error_description || error.message}` });
     }
   }
 
@@ -105,69 +111,76 @@ const List = (props: PropsFromApp) => {
                 読み込み中...
               </Typography>
             ) : (
-              <Show
-                when={articles() && articles()!.length > 0}
-                fallback={
-                  <Typography variant="body1" gutterBottom>
-                    投稿はありません
-                  </Typography>
-                }
-              >
-                <For each={articles()} fallback={<></>}>
-                  {(article) => 
-                    <Box sx={{ paddingBottom: "10px" }}>
-                      <Card sx={{ minWidth: 300 }}>
-                        <CardContent>
-                          <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-                            {article.updatedAt.toLocaleString('ja-JP')}
-                          </Typography>
-                          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                            {article.userName}
-                          </Typography>
-                          <Typography variant="h6" gutterBottom>
-                            {article.title}
-                          </Typography>
-                          <For each={article.note?.split('\n')} fallback={<></>}>
-                            {(line) =>
-                              <Typography variant="body1" gutterBottom>
-                                {line}
-                              </Typography>
-                            }
-                          </For>
-                          <CardActions>
-                            <IconButton
-                              aria-label="edit"
-                              disabled={
-                                article.userId !== props.session.user!.id && article.noteType !== 3
-                              }
-                            >
-                              <EditIcon />
-                            </IconButton>
-                            <IconButton
-                              aria-label="delete"
-                              onClick={() => deleteArticleAction(article.id!)}
-                              disabled={
-                                article.userId !== props.session.user!.id
-                              }
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </CardActions>
-                        </CardContent>
-                      </Card>
-                    </Box>
+              <>
+                <Editor
+                  session={props.session}
+                  article={article()}
+                  getArticles={() => getArticles()}
+                  setMessage={(message: Message) => setMessage(message)}
+                />
+                <Show
+                  when={articles() && articles()!.length > 0}
+                  fallback={
+                    <Typography variant="body1" gutterBottom>
+                      投稿はありません
+                    </Typography>
                   }
-                </For>
-              </Show>
+                >
+                  <For each={articles()} fallback={<></>}>
+                    {(article) => 
+                      <Box sx={{ paddingBottom: "10px" }}>
+                        <Card sx={{ minWidth: 300 }}>
+                          <CardContent>
+                            <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+                              {article.updatedAt.toLocaleString('ja-JP')}
+                            </Typography>
+                            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                              {article.userName}
+                            </Typography>
+                            <Typography variant="h6" gutterBottom>
+                              {article.title}
+                            </Typography>
+                            <For each={article.note?.split('\n')} fallback={<></>}>
+                              {(line) =>
+                                <Typography variant="body1" gutterBottom>
+                                  {line}
+                                </Typography>
+                              }
+                            </For>
+                            <CardActions>
+                              <IconButton
+                                aria-label="edit"
+                                onClick={() => setArticle(article)}
+                                disabled={
+                                  article.userId !== props.session.user!.id && article.noteType !== 3
+                                }
+                              >
+                                <EditIcon />
+                              </IconButton>
+                              <IconButton
+                                aria-label="delete"
+                                onClick={() => deleteArticleAction(article.id!)}
+                                disabled={
+                                  article.userId !== props.session.user!.id
+                                }
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </CardActions>
+                          </CardContent>
+                        </Card>
+                      </Box>
+                    }
+                  </For>
+                </Show>
+              </>
             )}
           </div>
-          <div style={{ padding: "10px 0 0 0" }}>
-            <Show when={message().text !== ''} fallback={<></>}>
-              <Alert severity={message().severity}>
-                {message().text}
-              </Alert>
-            </Show>
-          </div>
+          <Show when={message().text !== ''} fallback={<></>}>
+            <Alert severity={message().severity}>
+              {message().text}
+            </Alert>
+          </Show>
         </Stack>
       </Box>
     </div>
