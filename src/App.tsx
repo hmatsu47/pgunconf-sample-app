@@ -1,4 +1,4 @@
-import { createSignal, createEffect, Show } from 'solid-js';
+import { createSignal, createEffect, Match, Show, Switch } from 'solid-js';
 import { supabase } from './supabaseClient';
 import Alert from '@suid/material/Alert';
 import AccountCircleIcon from '@suid/icons-material/AccountCircle';
@@ -6,13 +6,14 @@ import Box from '@suid/material/Box';
 import IconButton from '@suid/material/IconButton';
 import LogoutIcon from '@suid/icons-material/Logout';
 import ViewListIcon from '@suid/icons-material/ViewList';
-import Auth from './Auth';
-import Contents from './Contents';
 import { Session } from '@supabase/supabase-js';
 import AppBar from '@suid/material/AppBar';
 import Stack from '@suid/material/Stack';
 import Toolbar from '@suid/material/Toolbar';
 import Typography from '@suid/material/Typography';
+import Account from './Account';
+import Auth from './Auth';
+import List from './List';
 import { Message } from './types/common';
 
 export default () => {
@@ -110,7 +111,18 @@ export default () => {
           </AppBar>
         <Box sx={{ width: "100%", minWidth: "320px", display: "flex", justifyContent: "center" }}>
           <Stack spacing={2} direction="column">
-            {!session() ? <Auth /> : <Contents session={session()!} route={route()} getProfiled={() => getProfiled()}/>}
+            {!session() ? <Auth /> : (
+              <div aria-live="polite">
+                <Switch fallback={<></>}>
+                  <Match when={route() === 'profile'}>
+                    <Account session={session()!} getProfiled={() => getProfiled()}/>
+                  </Match>
+                  <Match when={route() === 'list'}>
+                    <List session={session()!} />
+                  </Match>
+                </Switch>
+              </div>
+            )}
             <Show when={message().text !== ''} fallback={<></>}>
               <Alert severity={message().severity}>
                 {message().text}

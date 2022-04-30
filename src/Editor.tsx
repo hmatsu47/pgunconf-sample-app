@@ -31,7 +31,6 @@ export default (props: Props) => {
   const [title, setTitle] = createSignal<string>('');
   const [note, setNote] = createSignal<string>('');
   const [noteType, setNoteType] = createSignal<number>(1);
-  let noteRef: HTMLTextAreaElement | undefined;
 
   createEffect(() => {
     setArticle();
@@ -93,7 +92,7 @@ export default (props: Props) => {
     }
   }
 
-  const updateArticleAction = async (e: { submitter: HTMLElement; }) => {
+  const updateArticleAction = async () => {
     // 投稿登録または更新
     const updates = {
       title: title(),
@@ -113,71 +112,72 @@ export default (props: Props) => {
 
   return (
     <Box sx={{ paddingBottom: "10px" }}>
-      <form onSubmit={updateArticleAction}>
-        <Card sx={{ minWidth: 300 }}>
-          <CardContent>
-            <Typography variant="subtitle1" gutterBottom>
-              {newArticle() ? '新規投稿' : '投稿編集'}
-            </Typography>
-            <TextField
-              required
-              id="title"
-              label="Title"
-              helperText="タイトルを入力してください"
-              type="text"
-              value={title()}
-              onChange={(event, value) => {
-                setTitle(value);
-              }}
-              style="width: 100%"
-            />
-            <Typography variant="subtitle2" gutterBottom>
-              本文 :
-            </Typography>
-            <textarea
-              ref={noteRef}
-              id="note"
-              aria-label="Note"
-              onchange={(event) => {
-                setNote(event.currentTarget.value);
-              }}
-              style="width: 100%; height: 9.0em; font-size: 1rem; line-height: 1.8em"
-            >
-              {note()}
-            </textarea>
-              <div style="padding: 10px 0 10px 0">
-                <Typography variant="subtitle2" sx={{ verticalAlign: "center" }}>
-                  他のユーザに許可する操作 :
-                </Typography>
-                <ToggleButtonGroup
-                  color="primary"
-                  value={noteType().toString()}
-                  exclusive
-                  onChange={(event, newType) => {
-                    setNoteType(Number(newType));
-                  }}
-                  disabled={!newArticle() && props.session.user!.id !== props.article!.userId}
-                >
-                  <ToggleButton value="1">許可しない</ToggleButton>
-                  <ToggleButton value="2">読み取りのみ</ToggleButton>
-                  <ToggleButton value="3">読み取りと編集</ToggleButton>
-                </ToggleButtonGroup>
-              </div>
-            <CardActions>
-              <Button
-                variant="outlined"
-                aria-live="polite"
-                onClick={() => clearArticle()}
+      <Card sx={{ minWidth: 300 }}>
+        <CardContent>
+          <Typography variant="subtitle1" gutterBottom>
+            {newArticle() ? '新規投稿' : '投稿編集'}
+          </Typography>
+          <TextField
+            required
+            id="title"
+            label="Title"
+            helperText="タイトルを入力してください"
+            type="text"
+            value={title()}
+            onChange={(event, value) => {
+              setTitle(value);
+            }}
+            style="width: 100%"
+          />
+          <Typography variant="subtitle2" gutterBottom>
+            本文 :
+          </Typography>
+          <textarea
+            id="note"
+            aria-label="Note"
+            onchange={(event) => {
+              setNote(event.currentTarget.value);
+            }}
+            style="width: 100%; height: 9.0em; font-size: 1rem; line-height: 1.8em"
+          >
+            {note()}
+          </textarea>
+            <div style="padding: 10px 0 10px 0">
+              <Typography variant="subtitle2" sx={{ verticalAlign: "center" }}>
+                他のユーザに許可する操作 :
+              </Typography>
+              <ToggleButtonGroup
+                color="primary"
+                value={noteType().toString()}
+                exclusive
+                onChange={(event, newType) => {
+                  setNoteType(Number(newType));
+                }}
+                disabled={!newArticle() && props.session.user!.id !== props.article!.userId}
               >
-                キャンセル
-              </Button>
-              <Button variant="contained" type="submit" aria-live="polite">
-                {newArticle() ? '登録' : '更新'}
-              </Button>
-            </CardActions>
-          </CardContent>
-        </Card>
-      </form>
+                <ToggleButton value="1">許可しない</ToggleButton>
+                <ToggleButton value="2">読み取りのみ</ToggleButton>
+                <ToggleButton value="3">読み取りと編集</ToggleButton>
+              </ToggleButtonGroup>
+            </div>
+          <CardActions>
+            <Button
+              variant="outlined"
+              aria-live="polite"
+              onClick={() => clearArticle()}
+            >
+              キャンセル
+            </Button>
+            <Button
+              variant="contained"
+              aria-live="polite"
+              onClick={() => updateArticleAction()}
+            >
+              {newArticle() ? '登録' : '更新'}
+            </Button>
+          </CardActions>
+        </CardContent>
+      </Card>
     </Box>
   );
 }
