@@ -117,9 +117,9 @@ export default (props: Props) => {
 
   return (
     <Box sx={{ paddingBottom: "10px" }}>
-      <Card sx={{ minWidth: 300 }}>
+      <Card elevation={5} sx={{ minWidth: 300 }}>
         <CardContent>
-          <Typography variant="subtitle1" gutterBottom>
+          <Typography variant="h6" gutterBottom>
             {newArticle() ? '新規投稿' : '投稿編集'}
           </Typography>
           <TextField
@@ -140,6 +140,7 @@ export default (props: Props) => {
           <textarea
             id="note"
             aria-label="Note"
+            placeholder="本文を入力してください"
             onchange={(event) => {
               setNote(event.currentTarget.value);
             }}

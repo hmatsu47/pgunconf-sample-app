@@ -118,6 +118,20 @@ const List = (props: Props) => {
                   getArticles={() => getArticles()}
                   setMessage={(message: Message) => setMessage(message)}
                 />
+              </>
+            )}
+            <Show when={message().text !== ''} fallback={<></>}>
+              <div style={{ padding: "0 0 10px 0" }}>
+                <Alert severity={message().severity}>
+                  {message().text}
+                </Alert>
+              </div>
+            </Show>
+            {loading() ? (
+              <>
+              </>
+            ) : (
+              <>
                 <Show
                   when={articles() && articles()!.length > 0}
                   fallback={
@@ -176,11 +190,6 @@ const List = (props: Props) => {
               </>
             )}
           </div>
-          <Show when={message().text !== ''} fallback={<></>}>
-            <Alert severity={message().severity}>
-              {message().text}
-            </Alert>
-          </Show>
         </Stack>
       </Box>
     </div>
