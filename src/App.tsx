@@ -72,7 +72,7 @@ export default () => {
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Supabase (RLS) + SolidJS のサンプル
-              </Typography>
+            </Typography>
             <Show when={session() && profiled()} fallback={<></>}>
               <IconButton
                 size="large"

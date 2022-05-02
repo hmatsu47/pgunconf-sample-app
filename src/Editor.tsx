@@ -27,15 +27,21 @@ type Updates = {
 }
 
 export default (props: Props) => {
+  const [loading, setLoading] = createSignal<boolean>(false);
   const [newArticle, setNewArticle] = createSignal<boolean>(true);
   const [title, setTitle] = createSignal<string>('');
   const [note, setNote] = createSignal<string>('');
   const [noteType, setNoteType] = createSignal<number>(1);
 
-  createEffect(() => {
-    setArticle();
+  const setFocus = () => {
+    // タイトル欄にフォーカス
     const element = document.getElementById('title');
     element?.focus();
+  }
+
+  createEffect(() => {
+    setArticle();
+    setFocus();
   })
 
   const setArticle = async () => {
@@ -43,58 +49,54 @@ export default (props: Props) => {
       return;
     }
     // 投稿内容をセット
+    setLoading(true);
     setNewArticle(false);
     setTitle(props.article.title);
     setNote(props.article.note ? props.article.note : '');
     setNoteType(props.article.noteType);
+    setLoading(false);
   }
 
   const clearArticle = async () => {
     // タイトルと本文をクリア
+    setLoading(true);
     setNewArticle(true);
     setTitle('');
     setNote('');
     setNoteType(1);
+    setLoading(false);
+    setFocus();
   }
 
-  const insertArticle = async (updates: Updates) => {
-    // 投稿登録（DB へ）
+  const addOrUpdateArticle = async (updates: Updates, isInsert: boolean) => {
+    // 投稿登録・更新（DB へ）
     try {
+      setLoading(true);
 
-      const { error } = await supabase
-        .from('articles')
-        .insert(updates, { returning: 'minimal' });
+      const { error } = await (isInsert ? (
+        supabase
+          .from('articles')
+          .insert(updates, { returning: 'minimal' })
+        ) : (
+        supabase
+          .from('articles')
+          .update(updates, { returning: 'minimal' })
+          .match({ id: props.article!.id }))
+        );
 
       if (error) {
         throw error;
       }
       props.getArticles();
-      props.setMessage({ severity: 'success', text: `投稿を登録しました。` });
+      props.setMessage({ severity: 'success', text: `投稿を${newArticle() ? '登録' : '更新'}しました。` });
     } catch (error) {
       props.setMessage({ severity: 'error', text: `エラーが発生しました : ${error.error_description || error.message}` });
+    } finally {
+      setLoading(false);
     }
   }
 
-  const updateArticle = async (updates: Updates) => {
-    // 投稿更新（DB へ）
-    try {
-
-      const { error } = await supabase
-        .from('articles')
-        .update(updates, { returning: 'minimal' })
-        .match({ id: props.article!.id });
-
-      if (error) {
-        throw error;
-      }
-      props.getArticles();
-      props.setMessage({ severity: 'success', text: `投稿を更新しました。` });
-    } catch (error) {
-      props.setMessage({ severity: 'error', text: `エラーが発生しました : ${error.error_description || error.message}` });
-    }
-  }
-
-  const updateArticleAction = async () => {
+  const addOrUpdateArticleAction = async () => {
     // 投稿登録または更新
     const updates = {
       title: title(),
@@ -103,13 +105,7 @@ export default (props: Props) => {
       updated_at: new Date(),
       userid: supabase.auth.user()!.id
     };
-    if (newArticle()) {
-      // 新規登録
-      insertArticle(updates);
-    } else {
-      // 更新
-      updateArticle(updates);
-    }
+    addOrUpdateArticle(updates, newArticle());
   }
 
   return (
@@ -168,13 +164,15 @@ export default (props: Props) => {
               variant="outlined"
               aria-live="polite"
               onClick={() => clearArticle()}
+              disabled={loading()}
             >
               キャンセル
             </Button>
             <Button
               variant="contained"
               aria-live="polite"
-              onClick={() => updateArticleAction()}
+              onClick={() => addOrUpdateArticleAction()}
+              disabled={loading()}
             >
               {newArticle() ? '登録' : '更新'}
             </Button>

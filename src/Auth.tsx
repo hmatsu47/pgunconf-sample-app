@@ -39,7 +39,7 @@ export default function Auth() {
       <div style={{ padding: "10px 0 0 0" }}>
         <Typography variant="body1" gutterBottom>
           メールアドレスを入力して送信ボタンをクリックしてください。
-            </Typography>
+        </Typography>
       </div>
       {loading() ? (
         <div style={{ padding: "10px 0 0 0" }}>
@@ -62,7 +62,7 @@ export default function Auth() {
             />
             <Button variant="contained" type="submit" aria-live="polite">
               メールを送信
-                </Button>
+            </Button>
             <Show when={message().text !== ''} fallback={<></>}>
               <Alert severity={message().severity}>
                 {message().text}
