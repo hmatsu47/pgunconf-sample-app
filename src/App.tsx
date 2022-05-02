@@ -69,60 +69,61 @@ export default () => {
       />
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
-            <Toolbar>
-              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                Supabase (RLS) + SolidJS のサンプル
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Supabase (RLS) + SolidJS のサンプル
               </Typography>
-              <Show when={session() && profiled()} fallback={<></>}>
-                <IconButton
-                  size="large"
-                  edge="start"
-                  color="inherit"
-                  aria-label="list"
-                  sx={{ mr: 2 }}
-                  onClick={() => setRoute('list')}
-                >
-                  <ViewListIcon />
-                </IconButton>
-              </Show>
-              <Show when={session()} fallback={<></>}>
-                <IconButton
-                  size="large"
-                  edge="start"
-                  color="inherit"
-                  aria-label="profile"
-                  sx={{ mr: 2 }}
-                  onClick={() => setRoute('profile')}
-                >
-                  <AccountCircleIcon />
-                </IconButton>
-                <IconButton
-                  size="large"
-                  edge="start"
-                  color="inherit"
-                  aria-label="sign out"
-                  sx={{ mr: 2 }}
-                  onClick={() => supabase.auth.signOut()}
-                >
-                  <LogoutIcon />
-                </IconButton>
-              </Show>
-            </Toolbar>
-          </AppBar>
+            <Show when={session() && profiled()} fallback={<></>}>
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="list"
+                sx={{ mr: 2 }}
+                onClick={() => setRoute('list')}
+              >
+                <ViewListIcon />
+              </IconButton>
+            </Show>
+            <Show when={session()} fallback={<></>}>
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="profile"
+                sx={{ mr: 2 }}
+                onClick={() => setRoute('profile')}
+              >
+                <AccountCircleIcon />
+              </IconButton>
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="sign out"
+                sx={{ mr: 2 }}
+                onClick={() => supabase.auth.signOut()}
+              >
+                <LogoutIcon />
+              </IconButton>
+            </Show>
+          </Toolbar>
+        </AppBar>
         <Box sx={{ width: "100%", minWidth: "320px", display: "flex", justifyContent: "center" }}>
           <Stack spacing={2} direction="column">
-            {!session() ? <Auth /> : (
-              <div aria-live="polite">
-                <Switch fallback={<></>}>
-                  <Match when={route() === 'profile'}>
-                    <Account session={session()!} getProfiled={() => getProfiled()}/>
-                  </Match>
-                  <Match when={route() === 'list'}>
-                    <List session={session()!} />
-                  </Match>
-                </Switch>
-              </div>
-            )}
+            <div aria-live="polite">
+              <Switch fallback={<></>}>
+                <Match when={!session()}>
+                  <Auth />
+                </Match>
+                <Match when={route() === 'profile'}>
+                  <Account session={session()!} getProfiled={() => getProfiled()} />
+                </Match>
+                <Match when={route() === 'list'}>
+                  <List session={session()!} />
+                </Match>
+              </Switch>
+            </div>
             <Show when={message().text !== ''} fallback={<></>}>
               <Alert severity={message().severity}>
                 {message().text}

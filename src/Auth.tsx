@@ -35,44 +35,42 @@ export default function Auth() {
 
   // メールアドレス入力画面を表示（マジックリンク送信用）
   return (
-    <div aria-live="polite">
-      <Box sx={{ width: "100%", maxWidth: "480px", minWidth: "300px" }}>
+    <Box sx={{ width: "100%", maxWidth: "480px", minWidth: "300px" }}>
+      <div style={{ padding: "10px 0 0 0" }}>
+        <Typography variant="body1" gutterBottom>
+          メールアドレスを入力して送信ボタンをクリックしてください。
+            </Typography>
+      </div>
+      {loading() ? (
         <div style={{ padding: "10px 0 0 0" }}>
           <Typography variant="body1" gutterBottom>
-            メールアドレスを入力して送信ボタンをクリックしてください。
+            マジックリンク送信中...
           </Typography>
         </div>
-        {loading() ? (
-          <div style={{ padding: "10px 0 0 0" }}>
-            <Typography variant="body1" gutterBottom>
-              マジックリンク送信中...
-            </Typography>
-          </div>
-        ) : (
-          <form onSubmit={handleLogin}>
-            <Stack spacing={2} direction="column">
-              <TextField
-                required
-                id="email"
-                label="メールアドレス"
-                helperText="メールアドレスを入力してください"
-                value={email()}
-                onChange={(event, value) => {
-                  setEmail(value);
-                }}
-              />
-              <Button variant="contained" type="submit" aria-live="polite">
-                メールを送信
-              </Button>
-              <Show when={message().text !== ''} fallback={<></>}>
-                <Alert severity={message().severity}>
-                  {message().text}
-                </Alert>
-              </Show>
-            </Stack>
-          </form>
-        )}
-      </Box>
-    </div>
+      ) : (
+        <form onSubmit={handleLogin}>
+          <Stack spacing={2} direction="column">
+            <TextField
+              required
+              id="email"
+              label="メールアドレス"
+              helperText="メールアドレスを入力してください"
+              value={email()}
+              onChange={(event, value) => {
+                setEmail(value);
+              }}
+            />
+            <Button variant="contained" type="submit" aria-live="polite">
+              メールを送信
+                </Button>
+            <Show when={message().text !== ''} fallback={<></>}>
+              <Alert severity={message().severity}>
+                {message().text}
+              </Alert>
+            </Show>
+          </Stack>
+        </form>
+      )}
+    </Box>
   );
 };

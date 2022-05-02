@@ -1,4 +1,4 @@
-import { createEffect, createSignal, onMount } from 'solid-js';
+import { createEffect, createSignal } from 'solid-js';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from './supabaseClient';
 import Button from '@suid/material/Button';
@@ -32,13 +32,10 @@ export default (props: Props) => {
   const [note, setNote] = createSignal<string>('');
   const [noteType, setNoteType] = createSignal<number>(1);
 
-  onMount(() => {
-    const element = document.getElementById('title');
-    element?.focus();
-  })
-
   createEffect(() => {
     setArticle();
+    const element = document.getElementById('title');
+    element?.focus();
   })
 
   const setArticle = async () => {
