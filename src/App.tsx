@@ -109,21 +109,30 @@ export default () => {
             </Show>
           </Toolbar>
         </AppBar>
-        <Box sx={{ width: "100%", minWidth: "320px", display: "flex", justifyContent: "center" }}>
-          <Stack spacing={2} direction="column">
-            <div aria-live="polite">
-              <Switch fallback={<></>}>
-                <Match when={!session()}>
-                  <Auth />
-                </Match>
-                <Match when={route() === 'profile'}>
-                  <Account session={session()!} getProfiled={() => getProfiled()} />
-                </Match>
-                <Match when={route() === 'list'}>
-                  <List session={session()!} />
-                </Match>
-              </Switch>
-            </div>
+        <Box
+          sx={{
+            width: "100%",
+            minWidth: "320px",
+            display: "flex",
+            justifyContent: "center"
+          }}
+        >
+          <Stack
+            spacing={2}
+            direction="column"
+            aria-live="polite"
+          >
+            <Switch fallback={<></>}>
+              <Match when={!session()}>
+                <Auth />
+              </Match>
+              <Match when={route() === 'profile'}>
+                <Account session={session()!} getProfiled={() => getProfiled()} />
+              </Match>
+              <Match when={route() === 'list'}>
+                <List session={session()!} />
+              </Match>
+            </Switch>
             <Show when={message().text !== ''} fallback={<></>}>
               <Alert severity={message().severity}>
                 {message().text}

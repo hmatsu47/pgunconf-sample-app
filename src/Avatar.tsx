@@ -82,54 +82,65 @@ export default (props: Props | null) => {
   const theme = useTheme();
   // アバター画像とアップロードコントロールを表示
   return (
-    <div style={{ width: props!.size }} aria-live="polite">
-      <Stack direction="column" spacing={2} sx={{ display: "flex", justifyContent: "center" }}>
-        {avatarUrl() === '' ? (
-          <Box
-            sx={{
-              height: props!.size,
-              width: props!.size,
-              backgroundColor: theme.palette.grey[100],
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
+    <Stack
+      direction="column"
+        spacing={2}
+        sx={{
+          width: props!.size,
+          display: "flex",
+          justifyContent: "center"
+        }}
+        aria-live="polite"
+      >
+      {avatarUrl() === '' ? (
+        <Box
+          sx={{
+            height: props!.size,
+            width: props!.size,
+            backgroundColor: theme.palette.grey[100],
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+        >
+          <Typography variant="body1">
+            No image
+          </Typography>
+        </Box>
+      ) : (
+        <img
+          src={avatarUrl()}
+          alt={'Avatar'}
+          className="avatar image"
+          style={{ height: props!.size, width: props!.size }}
+        />
+      )}
+      {uploading() ? (
+        <Box>
+          <Typography variant="body1" gutterBottom>
+            アップロード中...
+          </Typography>
+        </Box>
+      ) : (
+        <label htmlFor="contained-button-file">
+          <span style="display:none">
+            <input
+              type="file"
+              id="contained-button-file"
+              accept="image/*"
+              onChange={uploadAvatar}
+              disabled={uploading()}
+            />
+          </span>
+          <Button
+            variant="contained"
+            component="span"
+            sx={{ width: "100%" }}
           >
-            <Typography variant="body1">
-              No image
-            </Typography>
-          </Box>
-        ) : (
-          <img
-            src={avatarUrl()}
-            alt={'Avatar'}
-            className="avatar image"
-            style={{ height: props!.size, width: props!.size }}
-          />
-        )}
-        {uploading() ? (
-            <div>
-            <Typography variant="body1" gutterBottom>
-              アップロード中...
-            </Typography>
-          </div>
-        ) : (
-          <label htmlFor="contained-button-file">
-            <span style="display:none">
-              <input
-                type="file"
-                id="contained-button-file"
-                accept="image/*"
-                onChange={uploadAvatar}
-                disabled={uploading()}
-              />
-            </span>
-            <Button variant="contained" component="span" style="width: 100%">
-              アップロード
-            </Button>
-          </label>
-        )}
-      </Stack>
-    </div>
+            アップロード
+          </Button>
+        </label>
+      )}
+    </Stack>
   )
 }

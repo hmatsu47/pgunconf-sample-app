@@ -36,17 +36,17 @@ export default function Auth() {
   // メールアドレス入力画面を表示（マジックリンク送信用）
   return (
     <Box sx={{ width: "100%", maxWidth: "480px", minWidth: "300px" }}>
-      <div style={{ padding: "10px 0 0 0" }}>
+      <Box sx={{ padding: "10px 0 0 0" }}>
         <Typography variant="body1" gutterBottom>
           メールアドレスを入力して送信ボタンをクリックしてください。
         </Typography>
-      </div>
+      </Box>
       {loading() ? (
-        <div style={{ padding: "10px 0 0 0" }}>
+        <Box sx={{ padding: "10px 0 0 0" }}>
           <Typography variant="body1" gutterBottom>
             マジックリンク送信中...
           </Typography>
-        </div>
+        </Box>
       ) : (
         <form onSubmit={handleLogin}>
           <Stack spacing={2} direction="column">

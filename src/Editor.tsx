@@ -125,7 +125,7 @@ export default (props: Props) => {
             onChange={(event, value) => {
               setTitle(value);
             }}
-            style="width: 100%"
+            sx={{ width: "100%" }}
           />
           <Typography variant="subtitle2" gutterBottom>
             本文 :
@@ -141,7 +141,7 @@ export default (props: Props) => {
           >
             {note()}
           </textarea>
-            <div style="padding: 10px 0 10px 0">
+            <Box sx={{ padding: "10px 0 10px 0" }}>
               <Typography variant="subtitle2" sx={{ verticalAlign: "center" }}>
                 他のユーザに許可する操作 :
               </Typography>
@@ -158,7 +158,7 @@ export default (props: Props) => {
                 <ToggleButton value="2">読み取りのみ</ToggleButton>
                 <ToggleButton value="3">読み取りと編集</ToggleButton>
               </ToggleButtonGroup>
-            </div>
+            </Box>
           <CardActions>
             <Button
               variant="outlined"

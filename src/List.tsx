@@ -102,97 +102,103 @@ const List = (props: Props) => {
 
   // 投稿一覧画面を表示
   return (
-    <div aria-live="polite">
-      <Box sx={{ width: "100%", minWidth: "320px", display: "flex", justifyContent: "center" }}>
-        <Stack spacing={2} direction="column">
-          <div style={{ padding: "10px 0 0 0" }}>
-            {loading() ? (
-              <Typography variant="body1" gutterBottom>
-                読み込み中...
-              </Typography>
-            ) : (
-              <>
-                <Editor
-                  session={props.session}
-                  article={article()}
-                  getArticles={() => getArticles()}
-                  setMessage={(message: Message) => setMessage(message)}
-                />
-              </>
-            )}
-            <Show when={message().text !== ''} fallback={<></>}>
-              <div style={{ padding: "0 0 10px 0" }}>
-                <Alert severity={message().severity}>
-                  {message().text}
-                </Alert>
-              </div>
-            </Show>
-            {loading() ? (
-              <>
-              </>
-            ) : (
-              <>
-                <Show
-                  when={articles() && articles()!.length > 0}
-                  fallback={
-                    <Typography variant="body1" gutterBottom>
-                      投稿はありません
-                    </Typography>
-                  }
-                >
-                  <For each={articles()} fallback={<></>}>
-                    {(article) => 
-                      <Box sx={{ paddingBottom: "10px" }}>
-                        <Card sx={{ minWidth: 300 }}>
-                          <CardContent>
-                            <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-                              {article.updatedAt.toLocaleString('ja-JP')}
-                            </Typography>
-                            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                              {article.userName}
-                            </Typography>
-                            <Typography variant="h6" gutterBottom>
-                              {article.title}
-                            </Typography>
-                            <For each={article.note?.split('\n')} fallback={<></>}>
-                              {(line) =>
-                                <Typography variant="body1" gutterBottom>
-                                  {line}
-                                </Typography>
+    <Box
+      sx={{
+        width: "100%",
+        minWidth: "320px",
+        display: "flex",
+        justifyContent: "center"
+      }}
+      aria-live="polite"
+    >
+      <Stack spacing={2} direction="column">
+        <Box sx={{ padding: "10px 0 0 0" }}>
+          {loading() ? (
+            <Typography variant="body1" gutterBottom>
+              読み込み中...
+            </Typography>
+          ) : (
+            <>
+              <Editor
+                session={props.session}
+                article={article()}
+                getArticles={() => getArticles()}
+                setMessage={(message: Message) => setMessage(message)}
+              />
+            </>
+          )}
+          <Show when={message().text !== ''} fallback={<></>}>
+            <Box sx={{ padding: "0 0 10px 0" }}>
+              <Alert severity={message().severity}>
+                {message().text}
+              </Alert>
+            </Box>
+          </Show>
+          {loading() ? (
+            <>
+            </>
+          ) : (
+            <>
+              <Show
+                when={articles() && articles()!.length > 0}
+                fallback={
+                  <Typography variant="body1" gutterBottom>
+                    投稿はありません
+                  </Typography>
+                }
+              >
+                <For each={articles()} fallback={<></>}>
+                  {(article) => 
+                    <Box sx={{ paddingBottom: "10px" }}>
+                      <Card sx={{ minWidth: 300 }}>
+                        <CardContent>
+                          <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+                            {article.updatedAt.toLocaleString('ja-JP')}
+                          </Typography>
+                          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                            {article.userName}
+                          </Typography>
+                          <Typography variant="h6" gutterBottom>
+                            {article.title}
+                          </Typography>
+                          <For each={article.note?.split('\n')} fallback={<></>}>
+                            {(line) =>
+                              <Typography variant="body1" gutterBottom>
+                                {line}
+                              </Typography>
+                            }
+                          </For>
+                          <CardActions>
+                            <IconButton
+                              aria-label="edit"
+                              onClick={() => setArticle(article)}
+                              disabled={
+                                article.userId !== props.session.user!.id && article.noteType !== 3
                               }
-                            </For>
-                            <CardActions>
-                              <IconButton
-                                aria-label="edit"
-                                onClick={() => setArticle(article)}
-                                disabled={
-                                  article.userId !== props.session.user!.id && article.noteType !== 3
-                                }
-                              >
-                                <EditIcon />
-                              </IconButton>
-                              <IconButton
-                                aria-label="delete"
-                                onClick={() => deleteArticleAction(article.id!)}
-                                disabled={
-                                  article.userId !== props.session.user!.id
-                                }
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </CardActions>
-                          </CardContent>
-                        </Card>
-                      </Box>
-                    }
-                  </For>
-                </Show>
-              </>
-            )}
-          </div>
-        </Stack>
-      </Box>
-    </div>
+                            >
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton
+                              aria-label="delete"
+                              onClick={() => deleteArticleAction(article.id!)}
+                              disabled={
+                                article.userId !== props.session.user!.id
+                              }
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </CardActions>
+                        </CardContent>
+                      </Card>
+                    </Box>
+                  }
+                </For>
+              </Show>
+            </>
+          )}
+        </Box>
+      </Stack>
+    </Box>
   );
 }
 

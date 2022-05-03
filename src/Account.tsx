@@ -102,95 +102,105 @@ const Account = (props: Props) => {
 
   // プロフィール画面を表示
   return (
-    <div aria-live="polite">
-      <Box sx={{ width: "100%", minWidth: "320px", maxWidth: "420px", display: "flex", justifyContent: "center" }}>
-        <Stack spacing={2} direction="column">
-          <div style={{ padding: "10px 0 0 0" }}>
-            {loading() ? (
-              <Typography variant="body1" gutterBottom>
-                {updating() ? '保存中...' : ''}
-              </Typography>
-            ) : (
-              <>
-                <Stack direction="row">
-                  <Avatar
-                    url={avatarUrl()}
-                    size={"150px"}
-                    onUpload={(url: string) => {
-                      setAvatarUrl(url);
-                      updateProfile({ username, website, avatarUrl: url });
-                    }}
-                    setMessage={(message: Message) => {
-                      setMessage(message);
-                    }}
-                  />
-                  <Typography variant="body1"
-                    sx={{
-                      padding: "50px 0 0 0",
-                      flexGrow: 1,
-                      display: "flex",
-                      justifyContent: "center"
-                    }}>
-                    <div>
-                      Email:<br/>
+    <Box
+      sx={{
+        width: "100%",
+        minWidth: "320px",
+        maxWidth: "420px",
+        display: "flex",
+        justifyContent: "center"
+      }}
+      aria-live="polite"
+    >
+      <Stack spacing={2} direction="column">
+        <Box sx={{ padding: "10px 0 0 0" }}>
+          {loading() ? (
+            <Typography variant="body1" gutterBottom>
+              {updating() ? '保存中...' : ''}
+            </Typography>
+          ) : (
+            <>
+              <Stack direction="row">
+                <Avatar
+                  url={avatarUrl()}
+                  size={"150px"}
+                  onUpload={(url: string) => {
+                    setAvatarUrl(url);
+                    updateProfile({ username, website, avatarUrl: url });
+                  }}
+                  setMessage={(message: Message) => {
+                    setMessage(message);
+                  }}
+                />
+                <Typography variant="body1"
+                  sx={{
+                    padding: "54px 0 0 0",
+                    flexGrow: 1,
+                    display: "flex",
+                    justifyContent: "center"
+                  }}>
+                  <Box>
+                    <Typography variant="subtitle2">
+                      Email:
+                    </Typography>
+                    <Typography variant="body2">
                       {props.session.user!.email}
-                    </div>
-                  </Typography>
-                </Stack>
-                <form onSubmit={updateProfile}>
-                  <div style={{ padding: "20px 0 0 0" }}>
-                    <TextField
-                      required
-                      id="username"
-                      label="Name"
-                      helperText="お名前（またはニックネームなど）を3文字以上で入力してください"
-                      type="text"
-                      value={username()}
-                      onChange={(event, value) => {
-                        setUsername(value);
-                      }}
-                      style="width: 100%"
-                    />
-                  </div>
-                  <div style={{ padding: "20px 0 0 0" }}>
-                    <TextField
-                      id="website"
-                      label="WebサイトURL"
-                      helperText="お持ちのWebサイト・ホームページなどのURLを入力してください"
-                      type="url"
-                      value={website()}
-                      onChange={(event, value) => {
-                        setWebsite(value);
-                      }}
-                      style="width: 100%"
-                    />
-                  </div>
-                  <div style={{ padding: "10px 0 0 0" }}>
-                    <Button
-                      variant="contained"
-                      type="submit"
-                      disabled={loading()}
-                      style={{ display: "flex", justifyContent: "center" }}
-                      aria-live="polite"
-                      sx={{width: "100%"}}
-                    >
-                      プロフィール更新
-                    </Button>
-                  </div>
-                  <div style={{ padding: "10px 0 0 0" }}>
-                    <Show when={message().text !== ''} fallback={<></>}>
-                      <Alert severity={message().severity}>
-                        {message().text}
-                      </Alert>
-                    </Show>
-                  </div>
-                </form>
-              </>
-            )}
-          </div>
-        </Stack>
-      </Box>
-    </div>
+                    </Typography>
+                  </Box>
+                </Typography>
+              </Stack>
+              <form onSubmit={updateProfile}>
+                <Box sx={{ padding: "20px 0 0 0" }}>
+                  <TextField
+                    required
+                    id="username"
+                    label="Name"
+                    helperText="お名前（またはニックネームなど）を3文字以上で入力してください"
+                    type="text"
+                    value={username()}
+                    onChange={(event, value) => {
+                      setUsername(value);
+                    }}
+                    sx={{ width: "100%" }}
+                  />
+                </Box>
+                <Box sx={{ padding: "20px 0 0 0" }}>
+                  <TextField
+                    id="website"
+                    label="WebサイトURL"
+                    helperText="お持ちのWebサイト・ホームページなどのURLを入力してください"
+                    type="url"
+                    value={website()}
+                    onChange={(event, value) => {
+                      setWebsite(value);
+                    }}
+                    sx={{ width: "100%" }}
+                  />
+                </Box>
+                <Box sx={{ padding: "10px 0 0 0" }}>
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    disabled={loading()}
+                    sx={{ display: "flex", justifyContent: "center", width: "100%" }}
+                    aria-live="polite"
+                  >
+                    プロフィール更新
+                  </Button>
+                </Box>
+                <Box sx={{ padding: "10px 0 0 0" }}>
+                  <Show when={message().text !== ''} fallback={<></>}>
+                    <Alert severity={message().severity}>
+                      {message().text}
+                    </Alert>
+                  </Show>
+                </Box>
+              </form>
+            </>
+          )}
+        </Box>
+      </Stack>
+    </Box>
   );
 }
 
