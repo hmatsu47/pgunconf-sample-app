@@ -1,4 +1,4 @@
-import { createSignal, createEffect, For, Show } from 'solid-js';
+import { createSignal, createEffect, For, Match, Show, Switch } from 'solid-js';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from './commons/supabaseClient';
 import Alert from '@suid/material/Alert';
@@ -8,6 +8,8 @@ import CardActions from '@suid/material/CardActions';
 import CardContent from '@suid/material/CardContent';
 import DeleteIcon from '@suid/icons-material/Delete';
 import EditIcon from '@suid/icons-material/Edit';
+import ExpandLessIcon from '@suid/icons-material/ExpandLess';
+import ExpandMoreIcon from '@suid/icons-material/ExpandMore';
 import IconButton from '@suid/material/IconButton';
 import Stack from '@suid/material/Stack';
 import Typography from '@suid/material/Typography';
@@ -59,7 +61,8 @@ const List = (props: Props) => {
             note: (obj.note ? obj.note : ''),
             noteType: obj.note_type,
             userId: obj.userid,
-            userName: (obj.profiles.username ? obj.profiles.username : '')
+            userName: (obj.profiles.username ? obj.profiles.username : ''),
+            isExpand: false
           };
           return article;
         })
@@ -74,6 +77,18 @@ const List = (props: Props) => {
     } finally {
       setLoading(false);
     }
+  }
+
+  const toggleExpand = (index: number, flag: boolean) => {
+    let tmpArticles: Article[] | undefined = articles();
+    if (!tmpArticles) {
+      return;
+    }
+    setLoading(true);
+    tmpArticles[index].isExpand = flag;
+    console.log(tmpArticles[index]);
+    setArticles(tmpArticles);
+    setLoading(false);
   }
 
   const resetArticle = () => {
@@ -129,24 +144,13 @@ const List = (props: Props) => {
         direction="column"
       >
         <Box sx={{ padding: "10px 0 0 0" }}>
-          {loading() ? (
-            <Typography
-              variant="body1"
-              gutterBottom
-            >
-              読み込み中...
-            </Typography>
-          ) : (
-            <>
-              <Item
-                session={props.session}
-                article={article()}
-                getArticles={() => getArticles()}
-                resetArticle={() => resetArticle()}
-                setMessage={(message: Message) => setMessage(message)}
-              />
-            </>
-          )}
+          <Item
+            session={props.session}
+            article={article()}
+            getArticles={() => getArticles()}
+            resetArticle={() => resetArticle()}
+            setMessage={(message: Message) => setMessage(message)}
+          />
           <Show
             when={message().text !== ''}
             fallback={<></>}
@@ -174,7 +178,7 @@ const List = (props: Props) => {
                   each={articles()}
                   fallback={<></>}
                 >
-                  {(article) => 
+                  {(article, index) => 
                     <Box sx={{ paddingBottom: "4px" }}>
                       <Card
                         variant="outlined"
@@ -208,20 +212,38 @@ const List = (props: Props) => {
                               {article.userName}
                             </Typography>
                           </Stack>
-                          <For
-                            each={article.note?.split('\n')}
+                          <Show
+                            when={article.isExpand}
                             fallback={<></>}
                           >
-                            {(line) =>
-                              <Typography
-                                variant="body1"
-                                gutterBottom
-                              >
-                                {line}
-                              </Typography>
-                            }
-                          </For>
+                            <For
+                              each={article.note?.split('\n')}
+                              fallback={<></>}
+                            >
+                              {(line) =>
+                                <Typography
+                                  variant="body1"
+                                  gutterBottom
+                                >
+                                  {line}
+                                </Typography>
+                              }
+                            </For>
+                          </Show>
                           <CardActions sx={{ padding: 0 }}>
+                            <IconButton
+                              aria-label="expand"
+                              onClick={() => toggleExpand(index(), !article.isExpand)}
+                            >
+                              <Switch fallback={<></>}>
+                                <Match when={!article.isExpand}>
+                                  <ExpandMoreIcon />
+                                </Match>
+                                <Match when={article.isExpand}>
+                                  <ExpandLessIcon />
+                                </Match>
+                              </Switch>
+                            </IconButton>
                             <IconButton
                               aria-label="edit"
                               onClick={() => setArticle(article)}
