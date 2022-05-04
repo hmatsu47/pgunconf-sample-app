@@ -1,5 +1,5 @@
 import { createSignal, onMount, Show } from 'solid-js';
-import { supabase } from './supabaseClient';
+import { supabase } from './commons/supabaseClient';
 import Alert from '@suid/material/Alert';
 import Box from '@suid/material/Box';
 import Button from '@suid/material/Button';
@@ -7,6 +7,7 @@ import Stack from '@suid/material/Stack';
 import TextField from '@suid/material/TextField';
 import Typography from '@suid/material/Typography';
 import { Message } from './types/common';
+import { setFocus } from './commons/setFocus';
 
 export default function Auth() {
   const [loading, setLoading] = createSignal<boolean>(false);
@@ -14,8 +15,7 @@ export default function Auth() {
   const [message, setMessage] = createSignal<Message>({ severity: 'info', text: '' });
 
   onMount(() => {
-    const element = document.getElementById('email');
-    element?.focus();
+    setFocus('email');
   })
 
   const handleLogin = async (event: Event) => {
@@ -23,11 +23,19 @@ export default function Auth() {
     // マジックリンクを送信
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signIn({ email: email() });
+      const { error } = await supabase
+        .auth
+        .signIn({ email: email() });
       if (error) throw error;
-      setMessage({ severity: 'success', text: 'メールを送信しました。メール本文にあるリンクをクリックしてください。' });
+      setMessage({
+        severity: 'success',
+        text: 'メールを送信しました。メール本文にあるリンクをクリックしてください。'
+      });
     } catch (error) {
-      setMessage({ severity: 'error', text: error.error_description || error.message });
+      setMessage({
+        severity: 'error',
+        text: `エラーが発生しました : ${error.error_description || error.message}`
+      });
     } finally {
       setLoading(false);
     }
@@ -37,19 +45,28 @@ export default function Auth() {
   return (
     <Box sx={{ width: "100%", maxWidth: "480px", minWidth: "300px" }}>
       <Box sx={{ padding: "10px 0 0 0" }}>
-        <Typography variant="body1" gutterBottom>
+        <Typography
+          variant="body1"
+          gutterBottom
+        >
           メールアドレスを入力して送信ボタンをクリックしてください。
         </Typography>
       </Box>
       {loading() ? (
         <Box sx={{ padding: "10px 0 0 0" }}>
-          <Typography variant="body1" gutterBottom>
+          <Typography
+            variant="body1"
+            gutterBottom
+          >
             マジックリンク送信中...
           </Typography>
         </Box>
       ) : (
         <form onSubmit={handleLogin}>
-          <Stack spacing={2} direction="column">
+          <Stack
+            spacing={2}
+            direction="column"
+          >
             <TextField
               required
               id="email"
@@ -60,10 +77,17 @@ export default function Auth() {
                 setEmail(value);
               }}
             />
-            <Button variant="contained" type="submit" aria-live="polite">
+            <Button
+              variant="contained"
+              type="submit"
+              aria-live="polite"
+            >
               メールを送信
             </Button>
-            <Show when={message().text !== ''} fallback={<></>}>
+            <Show
+              when={message().text !== ''}
+              fallback={<></>}
+            >
               <Alert severity={message().severity}>
                 {message().text}
               </Alert>

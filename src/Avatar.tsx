@@ -1,5 +1,5 @@
 import { createEffect, createSignal } from 'solid-js';
-import { supabase } from './supabaseClient';
+import { supabase } from './commons/supabaseClient';
 import Button from '@suid/material/Button';
 import Stack from '@suid/material/Stack';
 import Typography from '@suid/material/Typography';
@@ -29,7 +29,10 @@ export default (props: Props | null) => {
   const downloadImage = async (path: string) => {
     // アバター画像をダウンロード（ストレージから）
     try {
-      const { data, error } = await supabase.storage.from('avatars').download(path);
+      const { data, error } = await supabase
+        .storage
+        .from('avatars')
+        .download(path);
       if (error) {
         throw error;
       }
@@ -39,7 +42,10 @@ export default (props: Props | null) => {
       if (!props) {
         return;
       }
-      props.setMessage({ severity: 'error', text: `アバター画像のダウンロードに失敗しました : ${error.message}` });
+      props.setMessage({
+        severity: 'error',
+        text: `アバター画像のダウンロードに失敗しました : ${error.message}`
+      });
     }
   }
 
@@ -59,7 +65,10 @@ export default (props: Props | null) => {
       const fileName = `${Math.random()}.${fileExt}`;
       const filePath = `${fileName}`;
 
-      let { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file);
+      let { error: uploadError } = await supabase
+        .storage
+        .from('avatars')
+        .upload(filePath, file);
 
       if (uploadError) {
         throw uploadError;
@@ -73,7 +82,10 @@ export default (props: Props | null) => {
       if (!props) {
         return;
       }
-      props.setMessage({ severity: 'error', text: error.message });
+      props.setMessage({
+        severity: 'error',
+        text: `エラーが発生しました : ${error.error_description || error.message}`
+      });
     } finally {
       setUploading(false);
     }
@@ -117,7 +129,10 @@ export default (props: Props | null) => {
       )}
       {uploading() ? (
         <Box>
-          <Typography variant="body1" gutterBottom>
+          <Typography
+            variant="body1"
+            gutterBottom
+          >
             アップロード中...
           </Typography>
         </Box>

@@ -1,6 +1,6 @@
 import { createSignal, createEffect, Accessor, Show } from 'solid-js';
 import { Session } from '@supabase/supabase-js';
-import { supabase } from './supabaseClient';
+import { supabase } from './commons/supabaseClient';
 import Alert from '@suid/material/Alert';
 import Box from '@suid/material/Box';
 import Button from '@suid/material/Button';
@@ -9,6 +9,7 @@ import TextField from '@suid/material/TextField';
 import Typography from '@suid/material/Typography';
 import Avatar from './Avatar';
 import { Message } from './types/common';
+import { setFocus } from './commons/setFocus';
 
 type Props = {
   session: Session,
@@ -34,8 +35,7 @@ const Account = (props: Props) => {
 
   createEffect(() => {
     if (!loading()) {
-      const element = document.getElementById('username');
-      element?.focus();
+      setFocus('username');
     }
   })
 
@@ -61,7 +61,10 @@ const Account = (props: Props) => {
         setAvatarUrl(data.avatar_url);
       }
     } catch (error) {
-      setMessage({ severity: 'error', text: error.error_description || error.message });
+      setMessage({
+        severity: 'error',
+        text: `エラーが発生しました : ${error.error_description || error.message}`
+      });
     } finally {
       setLoading(false);
     }
@@ -82,17 +85,26 @@ const Account = (props: Props) => {
         updated_at: new Date()
       };
 
-      const { error } = await supabase.from('profiles').upsert(updates, {
-        returning: 'minimal', // Don't return the value after inserting
-      });
+      const { error } = await supabase
+        .from('profiles')
+        .upsert(updates, {
+          returning: 'minimal',
+        }
+      );
 
       if (error) {
         throw error;
       }
-      setMessage({ severity: 'success', text: 'プロフィールを更新しました。' });
+      setMessage({
+        severity: 'success',
+        text: 'プロフィールを更新しました。'
+      });
       props.getProfiled();
     } catch (error) {
-      setMessage({ severity: 'error', text: `エラーが発生しました : ${error.message}` });
+      setMessage({
+        severity: 'error',
+        text: `エラーが発生しました : ${error.message}`
+      });
     } finally {
       setLoading(false);
       setUpdating(false);
@@ -114,7 +126,10 @@ const Account = (props: Props) => {
       <Stack spacing={2} direction="column">
         <Box sx={{ padding: "10px 0 0 0" }}>
           {loading() ? (
-            <Typography variant="body1" gutterBottom>
+            <Typography
+              variant="body1"
+              gutterBottom
+            >
               {updating() ? '保存中...' : ''}
             </Typography>
           ) : (
@@ -125,13 +140,18 @@ const Account = (props: Props) => {
                   size={"150px"}
                   onUpload={(url: string) => {
                     setAvatarUrl(url);
-                    updateProfile({ username, website, avatarUrl: url });
+                    updateProfile({
+                      username,
+                      website,
+                      avatarUrl: url
+                    });
                   }}
                   setMessage={(message: Message) => {
                     setMessage(message);
                   }}
                 />
-                <Typography variant="body1"
+                <Typography
+                  variant="body1"
                   sx={{
                     padding: "54px 0 0 0",
                     flexGrow: 1,
@@ -188,7 +208,10 @@ const Account = (props: Props) => {
                   </Button>
                 </Box>
                 <Box sx={{ padding: "10px 0 0 0" }}>
-                  <Show when={message().text !== ''} fallback={<></>}>
+                  <Show
+                    when={message().text !== ''}
+                    fallback={<></>}
+                  >
                     <Alert severity={message().severity}>
                       {message().text}
                     </Alert>

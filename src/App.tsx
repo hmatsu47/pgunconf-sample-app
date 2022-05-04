@@ -1,5 +1,5 @@
 import { createSignal, createEffect, Match, Show, Switch } from 'solid-js';
-import { supabase } from './supabaseClient';
+import { supabase } from './commons/supabaseClient';
 import Alert from '@suid/material/Alert';
 import AccountCircleIcon from '@suid/icons-material/AccountCircle';
 import Box from '@suid/material/Box';
@@ -57,7 +57,10 @@ export default () => {
         setRoute('profile');
       }
     } catch (error) {
-      setMessage({ severity: 'error', text: error.error_description || error.message });
+      setMessage({
+        severity: 'error',
+        text: error.error_description || error.message
+      });
     }
   }
   // タイトルバー＋コンテンツを表示（コンテンツ：未認証のときはメールアドレス入力画面・認証済みのときはプロフィール画面）
@@ -70,10 +73,17 @@ export default () => {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ flexGrow: 1 }}
+            >
               Supabase (RLS) + SolidJS のサンプル
             </Typography>
-            <Show when={session() && profiled()} fallback={<></>}>
+            <Show
+              when={session() && profiled()}
+              fallback={<></>}
+            >
               <IconButton
                 size="large"
                 edge="start"
@@ -85,7 +95,10 @@ export default () => {
                 <ViewListIcon />
               </IconButton>
             </Show>
-            <Show when={session()} fallback={<></>}>
+            <Show
+              when={session()}
+              fallback={<></>}
+            >
               <IconButton
                 size="large"
                 edge="start"
@@ -133,7 +146,10 @@ export default () => {
                 <List session={session()!} />
               </Match>
             </Switch>
-            <Show when={message().text !== ''} fallback={<></>}>
+            <Show
+              when={message().text !== ''}
+              fallback={<></>}
+            >
               <Alert severity={message().severity}>
                 {message().text}
               </Alert>

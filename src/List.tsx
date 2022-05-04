@@ -1,6 +1,6 @@
 import { createSignal, createEffect, For, Show } from 'solid-js';
 import { Session } from '@supabase/supabase-js';
-import { supabase } from './supabaseClient';
+import { supabase } from './commons/supabaseClient';
 import Alert from '@suid/material/Alert';
 import Box from '@suid/material/Box';
 import Card from '@suid/material/Card';
@@ -64,13 +64,20 @@ const List = (props: Props) => {
           return article;
         })
         setArticles(listArticles);
-        setArticle(null);
+        resetArticle();
       }
     } catch (error) {
-      setMessage({ severity: 'error', text: `エラーが発生しました : ${error.error_description || error.message}` });
+      setMessage({
+        severity: 'error',
+        text: `エラーが発生しました : ${error.error_description || error.message}`
+      });
     } finally {
       setLoading(false);
     }
+  }
+
+  const resetArticle = () => {
+    setArticle(null);
   }
 
   const deleteArticle = async (id: number) => {
@@ -86,9 +93,15 @@ const List = (props: Props) => {
         throw error;
       }
       getArticles();
-      setMessage({ severity: 'success', text: '投稿を削除しました' });
+      setMessage({
+        severity: 'success',
+        text: '投稿を削除しました'
+      });
     } catch (error) {
-      setMessage({ severity: 'error', text: `エラーが発生しました : ${error.error_description || error.message}` });
+      setMessage({
+        severity: 'error',
+        text: `エラーが発生しました : ${error.error_description || error.message}`
+      });
     }
   }
 
@@ -111,10 +124,16 @@ const List = (props: Props) => {
       }}
       aria-live="polite"
     >
-      <Stack spacing={2} direction="column">
+      <Stack
+        spacing={2}
+        direction="column"
+      >
         <Box sx={{ padding: "10px 0 0 0" }}>
           {loading() ? (
-            <Typography variant="body1" gutterBottom>
+            <Typography
+              variant="body1"
+              gutterBottom
+            >
               読み込み中...
             </Typography>
           ) : (
@@ -123,11 +142,15 @@ const List = (props: Props) => {
                 session={props.session}
                 article={article()}
                 getArticles={() => getArticles()}
+                resetArticle={() => resetArticle()}
                 setMessage={(message: Message) => setMessage(message)}
               />
             </>
           )}
-          <Show when={message().text !== ''} fallback={<></>}>
+          <Show
+            when={message().text !== ''}
+            fallback={<></>}
+          >
             <Box sx={{ padding: "0 0 10px 0" }}>
               <Alert severity={message().severity}>
                 {message().text}
@@ -147,23 +170,43 @@ const List = (props: Props) => {
                   </Typography>
                 }
               >
-                <For each={articles()} fallback={<></>}>
+                <For
+                  each={articles()}
+                  fallback={<></>}
+                >
                   {(article) => 
                     <Box sx={{ paddingBottom: "10px" }}>
                       <Card sx={{ minWidth: 300 }}>
                         <CardContent>
-                          <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+                          <Typography
+                            variant="subtitle1"
+                            color="text.secondary"
+                            gutterBottom
+                          >
                             {article.updatedAt.toLocaleString('ja-JP')}
                           </Typography>
-                          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                          <Typography
+                            variant="subtitle2"
+                            color="text.secondary"
+                            gutterBottom
+                          >
                             {article.userName}
                           </Typography>
-                          <Typography variant="h6" gutterBottom>
+                          <Typography
+                            variant="h6"
+                            gutterBottom
+                          >
                             {article.title}
                           </Typography>
-                          <For each={article.note?.split('\n')} fallback={<></>}>
+                          <For
+                            each={article.note?.split('\n')}
+                            fallback={<></>}
+                          >
                             {(line) =>
-                              <Typography variant="body1" gutterBottom>
+                              <Typography
+                                variant="body1"
+                                gutterBottom
+                              >
                                 {line}
                               </Typography>
                             }
