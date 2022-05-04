@@ -97,14 +97,14 @@ export default (props: Props | null) => {
   return (
     <Stack
       direction="column"
-        spacing={2}
-        sx={{
-          width: props!.size,
-          display: "flex",
-          justifyContent: "center"
-        }}
-        aria-live="polite"
-      >
+      spacing={2}
+      sx={{
+        width: props!.size,
+        display: "flex",
+        justifyContent: "center"
+      }}
+      aria-live="polite"
+    >
       {avatarUrl() === '' ? (
         <Box
           sx={{

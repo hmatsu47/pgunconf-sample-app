@@ -44,7 +44,13 @@ export default function Auth() {
 
   // メールアドレス入力画面を表示（マジックリンク送信用）
   return (
-    <Box sx={{ width: "100%", maxWidth: "480px", minWidth: "300px" }}>
+    <Box
+      sx={{
+        width: "100%",
+        maxWidth: "480px",
+        minWidth: "300px"
+      }}
+    >
       <Box sx={{ padding: "10px 0 0 0" }}>
         <Typography
           variant="body1"

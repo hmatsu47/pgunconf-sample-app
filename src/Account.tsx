@@ -202,7 +202,11 @@ const Account = (props: Props) => {
                     variant="contained"
                     type="submit"
                     disabled={loading()}
-                    sx={{ display: "flex", justifyContent: "center", width: "100%" }}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      width: "100%"
+                    }}
                     aria-live="polite"
                     endIcon={<SaveIcon />}
                   >

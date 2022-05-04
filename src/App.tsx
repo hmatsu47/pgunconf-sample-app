@@ -140,7 +140,10 @@ export default () => {
                 <Auth />
               </Match>
               <Match when={route() === 'profile'}>
-                <Account session={session()!} getProfiled={() => getProfiled()} />
+                <Account
+                  session={session()!}
+                  getProfiled={() => getProfiled()}
+                />
               </Match>
               <Match when={route() === 'list'}>
                 <List session={session()!} />

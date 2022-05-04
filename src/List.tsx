@@ -181,26 +181,33 @@ const List = (props: Props) => {
                         sx={{ minWidth: 300 }}
                       >
                         <CardContent>
-                          <Typography
-                            variant="subtitle1"
-                            color="text.secondary"
-                            gutterBottom
+                          <Stack
+                            spacing={2}
+                            direction="row"
                           >
-                            {article.updatedAt.toLocaleString('ja-JP')}
-                          </Typography>
-                          <Typography
-                            variant="subtitle2"
-                            color="text.secondary"
-                            gutterBottom
-                          >
-                            {article.userName}
-                          </Typography>
-                          <Typography
-                            variant="h6"
-                            gutterBottom
-                          >
-                            {article.title}
-                          </Typography>
+                            <Typography
+                              variant="h6"
+                              gutterBottom
+                            >
+                              {article.title}
+                            </Typography>
+                            <Typography
+                              variant="subtitle1"
+                              color="text.secondary"
+                              gutterBottom
+                              sx={{ paddingTop: "1px" }}
+                            >
+                              {article.updatedAt.toLocaleString('ja-JP')}
+                            </Typography>
+                            <Typography
+                              variant="subtitle1"
+                              color="text.secondary"
+                              gutterBottom
+                              sx={{ paddingTop: "1px" }}
+                            >
+                              {article.userName}
+                            </Typography>
+                          </Stack>
                           <For
                             each={article.note?.split('\n')}
                             fallback={<></>}
@@ -214,7 +221,7 @@ const List = (props: Props) => {
                               </Typography>
                             }
                           </For>
-                          <CardActions>
+                          <CardActions sx={{ padding: 0 }}>
                             <IconButton
                               aria-label="edit"
                               onClick={() => setArticle(article)}
