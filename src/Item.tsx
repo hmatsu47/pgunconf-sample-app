@@ -63,11 +63,20 @@ export default (props: Props) => {
     setNote('');
     setNoteType(1);
     props.resetArticle();
+    setLoading(false);
   }
 
   const addOrUpdateArticle = async (updates: Updates, isInsert: boolean) => {
     // 投稿登録・更新（DB へ）
     try {
+      if (title() === '') {
+        props.setMessage({
+          severity: 'error',
+          text: 'タイトルを入力してください。'
+        });
+        setFocus('title');
+        return;
+      }
       setLoading(true);
 
       const { error } = await (isInsert ? (
