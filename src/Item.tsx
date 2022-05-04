@@ -130,35 +130,37 @@ export default (props: Props) => {
           <Typography variant="subtitle2" gutterBottom>
             本文 :
           </Typography>
-          <textarea
-            id="note"
-            aria-label="Note"
-            placeholder="本文を入力してください"
-            onchange={(event) => {
-              setNote(event.currentTarget.value);
-            }}
-            style="width: 100%; height: 9.0em; font-size: 1rem; line-height: 1.8em"
-          >
-            {note()}
-          </textarea>
-            <Box sx={{ padding: "10px 0 10px 0" }}>
-              <Typography variant="subtitle2" sx={{ verticalAlign: "center" }}>
-                他のユーザに許可する操作 :
-              </Typography>
-              <ToggleButtonGroup
-                color="primary"
-                value={noteType().toString()}
-                exclusive
-                onChange={(event, newType) => {
-                  setNoteType(Number(newType));
-                }}
-                disabled={!newArticle() && props.session.user!.id !== props.article!.userId}
-              >
-                <ToggleButton value="1">許可しない</ToggleButton>
-                <ToggleButton value="2">読み取りのみ</ToggleButton>
-                <ToggleButton value="3">読み取りと編集</ToggleButton>
-              </ToggleButtonGroup>
-            </Box>
+          <Box>
+            <textarea
+              id="note"
+              aria-label="Note"
+              placeholder="本文を入力してください"
+              onchange={(event) => {
+                setNote(event.currentTarget.value);
+              }}
+              style="width: 100%; height: 9.0em; font-size: 1rem; line-height: 1.8em"
+            >
+              {note()}
+            </textarea>
+          </Box>
+          <Box sx={{ padding: "10px 0 10px 0" }}>
+            <Typography variant="subtitle2" sx={{ verticalAlign: "center" }}>
+              他のユーザに許可する操作 :
+            </Typography>
+            <ToggleButtonGroup
+              color="primary"
+              value={noteType().toString()}
+              exclusive
+              onChange={(event, newType) => {
+                setNoteType(Number(newType));
+              }}
+              disabled={!newArticle() && props.session.user!.id !== props.article!.userId}
+            >
+              <ToggleButton value="1">許可しない</ToggleButton>
+              <ToggleButton value="2">読み取りのみ</ToggleButton>
+              <ToggleButton value="3">読み取りと編集</ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
           <CardActions>
             <Button
               variant="outlined"
