@@ -59,13 +59,14 @@ export default (props: Props) => {
 
   const clearArticle = async () => {
     // タイトルと本文をクリア
-    setLoading(true);
-    setNewArticle(true);
-    setTitle('');
-    setNote('');
-    setNoteType(1);
-    setLoading(false);
-    setFocus();
+    // setLoading(true);
+    // setNewArticle(true);
+    // setTitle('');
+    // setNote('');
+    // setNoteType(1);
+    // setLoading(false);
+    // setFocus();
+    props.getArticles();
   }
 
   const addOrUpdateArticle = async (updates: Updates, isInsert: boolean) => {
@@ -130,19 +131,17 @@ export default (props: Props) => {
           <Typography variant="subtitle2" gutterBottom>
             本文 :
           </Typography>
-          <Box>
-            <textarea
-              id="note"
-              aria-label="Note"
-              placeholder="本文を入力してください"
-              onchange={(event) => {
-                setNote(event.currentTarget.value);
-              }}
-              style="width: 100%; height: 9.0em; font-size: 1rem; line-height: 1.8em"
-            >
-              {note()}
-            </textarea>
-          </Box>
+          <textarea
+            id="note"
+            aria-label="Note"
+            placeholder="本文を入力してください"
+            onchange={(event) => {
+              setNote(event.currentTarget.value);
+            }}
+            style="width: 100%; height: 9.0em; font-size: 1rem; line-height: 1.8em"
+          >
+            {note()}
+          </textarea>
           <Box sx={{ padding: "10px 0 10px 0" }}>
             <Typography variant="subtitle2" sx={{ verticalAlign: "center" }}>
               他のユーザに許可する操作 :
