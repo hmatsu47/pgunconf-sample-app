@@ -2,9 +2,11 @@ import { createEffect, createSignal } from 'solid-js';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from './commons/supabaseClient';
 import Button from '@suid/material/Button';
+import CancelIcon from '@suid/icons-material/Cancel';
 import Card from '@suid/material/Card';
 import CardActions from '@suid/material/CardActions';
 import CardContent from '@suid/material/CardContent';
+import SaveIcon from '@suid/icons-material/Save';
 import TextField from '@suid/material/TextField';
 import ToggleButton from '@suid/material/ToggleButton';
 import ToggleButtonGroup from '@suid/material/ToggleButtonGroup';
@@ -183,6 +185,7 @@ export default (props: Props) => {
               variant="outlined"
               aria-live="polite"
               onClick={() => resetArticle()}
+              endIcon={<CancelIcon />}
               disabled={loading()}
             >
               キャンセル
@@ -191,6 +194,7 @@ export default (props: Props) => {
               variant="contained"
               aria-live="polite"
               onClick={() => addOrUpdateArticleAction()}
+              endIcon={<SaveIcon />}
               disabled={loading()}
             >
               {newArticle() ? '登録' : '更新'}

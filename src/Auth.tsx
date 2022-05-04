@@ -3,6 +3,7 @@ import { supabase } from './commons/supabaseClient';
 import Alert from '@suid/material/Alert';
 import Box from '@suid/material/Box';
 import Button from '@suid/material/Button';
+import SendIcon from '@suid/icons-material/Send';
 import Stack from '@suid/material/Stack';
 import TextField from '@suid/material/TextField';
 import Typography from '@suid/material/Typography';
@@ -81,6 +82,7 @@ export default function Auth() {
               variant="contained"
               type="submit"
               aria-live="polite"
+              endIcon={<SendIcon />}
             >
               メールを送信
             </Button>

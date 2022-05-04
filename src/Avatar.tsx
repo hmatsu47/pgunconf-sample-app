@@ -4,6 +4,7 @@ import Button from '@suid/material/Button';
 import Stack from '@suid/material/Stack';
 import Typography from '@suid/material/Typography';
 import Box from '@suid/material/Box';
+import UploadIcon from '@suid/icons-material/Upload';
 import useTheme from '@suid/material/styles/useTheme';
 import { Message } from './types/common';
 
@@ -151,6 +152,7 @@ export default (props: Props | null) => {
             variant="contained"
             component="span"
             sx={{ width: "100%" }}
+            endIcon={<UploadIcon />}
           >
             アップロード
           </Button>

@@ -175,8 +175,11 @@ const List = (props: Props) => {
                   fallback={<></>}
                 >
                   {(article) => 
-                    <Box sx={{ paddingBottom: "10px" }}>
-                      <Card sx={{ minWidth: 300 }}>
+                    <Box sx={{ paddingBottom: "4px" }}>
+                      <Card
+                        variant="outlined"
+                        sx={{ minWidth: 300 }}
+                      >
                         <CardContent>
                           <Typography
                             variant="subtitle1"

@@ -4,6 +4,7 @@ import { supabase } from './commons/supabaseClient';
 import Alert from '@suid/material/Alert';
 import Box from '@suid/material/Box';
 import Button from '@suid/material/Button';
+import SaveIcon from '@suid/icons-material/Save';
 import Stack from '@suid/material/Stack';
 import TextField from '@suid/material/TextField';
 import Typography from '@suid/material/Typography';
@@ -203,6 +204,7 @@ const Account = (props: Props) => {
                     disabled={loading()}
                     sx={{ display: "flex", justifyContent: "center", width: "100%" }}
                     aria-live="polite"
+                    endIcon={<SaveIcon />}
                   >
                     プロフィール更新
                   </Button>
