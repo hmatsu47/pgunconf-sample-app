@@ -59,7 +59,7 @@ export default () => {
     } catch (error) {
       setMessage({
         severity: 'error',
-        text: error.error_description || error.message
+        text: `エラーが発生しました : ${error.error_description || error.message}`
       });
     }
   }
