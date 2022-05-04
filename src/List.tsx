@@ -11,7 +11,7 @@ import EditIcon from '@suid/icons-material/Edit';
 import IconButton from '@suid/material/IconButton';
 import Stack from '@suid/material/Stack';
 import Typography from '@suid/material/Typography';
-import Editor from './Editor';
+import Item from './Item';
 import { Article, Message } from './types/common';
 
 type Props = {
@@ -119,7 +119,7 @@ const List = (props: Props) => {
             </Typography>
           ) : (
             <>
-              <Editor
+              <Item
                 session={props.session}
                 article={article()}
                 getArticles={() => getArticles()}
