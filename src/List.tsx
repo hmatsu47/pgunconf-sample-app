@@ -86,7 +86,6 @@ const List = (props: Props) => {
     }
     setLoading(true);
     tmpArticles[index].isExpand = flag;
-    console.log(tmpArticles[index]);
     setArticles(tmpArticles);
     setLoading(false);
   }
@@ -186,9 +185,24 @@ const List = (props: Props) => {
                       >
                         <CardContent>
                           <Stack
-                            spacing={2}
+                            spacing={1}
                             direction="row"
                           >
+                            <CardActions sx={{ padding: 0 }}>
+                              <IconButton
+                                onClick={() => toggleExpand(index(), !article.isExpand)}
+                                sx={{ padding: 0 }}
+                              >
+                                <Switch fallback={<></>}>
+                                  <Match when={!article.isExpand}>
+                                    <ExpandMoreIcon aria-label="expand more"/>
+                                  </Match>
+                                  <Match when={article.isExpand}>
+                                    <ExpandLessIcon aria-label="expand less"/>
+                                  </Match>
+                                </Switch>
+                              </IconButton>
+                            </CardActions>
                             <Typography
                               variant="h6"
                               gutterBottom
@@ -201,7 +215,7 @@ const List = (props: Props) => {
                               gutterBottom
                               sx={{ paddingTop: "1px" }}
                             >
-                              {article.updatedAt.toLocaleString('ja-JP')}
+                              {article.userName}
                             </Typography>
                             <Typography
                               variant="subtitle1"
@@ -209,7 +223,7 @@ const List = (props: Props) => {
                               gutterBottom
                               sx={{ paddingTop: "1px" }}
                             >
-                              {article.userName}
+                              {article.updatedAt.toLocaleString('ja-JP')}
                             </Typography>
                           </Stack>
                           <Show
@@ -231,19 +245,6 @@ const List = (props: Props) => {
                             </For>
                           </Show>
                           <CardActions sx={{ padding: 0 }}>
-                            <IconButton
-                              aria-label="expand"
-                              onClick={() => toggleExpand(index(), !article.isExpand)}
-                            >
-                              <Switch fallback={<></>}>
-                                <Match when={!article.isExpand}>
-                                  <ExpandMoreIcon />
-                                </Match>
-                                <Match when={article.isExpand}>
-                                  <ExpandLessIcon />
-                                </Match>
-                              </Switch>
-                            </IconButton>
                             <IconButton
                               aria-label="edit"
                               onClick={() => setArticle(article)}
