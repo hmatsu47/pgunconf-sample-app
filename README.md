@@ -16,3 +16,14 @@
   - 3 : ログインユーザ以外も表示・編集が可能
 - テーブル定義など
   - [db-create.sql](db-create.sql)
+
+### 初期設定
+
+```sh:初期設定
+npx degit solidjs/templates/ts pgunconf-sample-app
+cd pgunconf-sample-app
+npm i
+npm install @supabase/supabase-js
+npm install @suid/material
+npm install @suid/icons-material
+```
