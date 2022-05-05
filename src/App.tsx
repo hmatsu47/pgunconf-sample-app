@@ -89,7 +89,7 @@ export default () => {
                 edge="start"
                 color="inherit"
                 aria-label="list"
-                sx={{ mr: 2 }}
+                sx={{ mr: 1 }}
                 onClick={() => setRoute('list')}
               >
                 <ViewListIcon />
@@ -104,7 +104,7 @@ export default () => {
                 edge="start"
                 color="inherit"
                 aria-label="profile"
-                sx={{ mr: 2 }}
+                sx={{ mr: 1 }}
                 onClick={() => setRoute('profile')}
               >
                 <AccountCircleIcon />
@@ -114,7 +114,7 @@ export default () => {
                 edge="start"
                 color="inherit"
                 aria-label="sign out"
-                sx={{ mr: 2 }}
+                // sx={{ mr: 2 }}
                 onClick={() => supabase.auth.signOut()}
               >
                 <LogoutIcon />
