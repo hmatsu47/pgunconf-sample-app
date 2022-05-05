@@ -27,3 +27,13 @@ npm install @supabase/supabase-js
 npm install @suid/material
 npm install @suid/icons-material
 ```
+
+- `.env`ファイル（`pgunconf-sample-app`直下に置く）
+
+```text:.env
+VITE_SUPABASE_URL=YOUR_SUPABASE_URL
+VITE_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
+```
+
+- なお SolidJS の標準的な手順では Vite を使うため Supabase の Docs（Quickstart: SolidJS）のとおりに`process.env.XXX`で環境変数を読むことはできない
+  - `import.meta.env.XXX`を使う
