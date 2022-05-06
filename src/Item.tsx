@@ -41,7 +41,6 @@ export default (props: Props) => {
   createEffect(() => {
     setArticle();
     setFocus('title');
-    console.log(document.body.scrollWidth);
   })
 
   const setArticle = async () => {
