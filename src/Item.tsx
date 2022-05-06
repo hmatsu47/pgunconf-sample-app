@@ -14,6 +14,7 @@ import Typography from '@suid/material/Typography';
 import Box from '@suid/material/Box';
 import { Article, Message } from './types/common';
 import { setFocus } from './commons/setFocus';
+import './Item.css';
 
 type Props = {
   session: Session,
@@ -40,6 +41,7 @@ export default (props: Props) => {
   createEffect(() => {
     setArticle();
     setFocus('title');
+    console.log(document.body.scrollWidth);
   })
 
   const setArticle = async () => {
@@ -123,8 +125,8 @@ export default (props: Props) => {
   return (
     <Box sx={{ paddingBottom: "10px" }}>
       <Card
+        id="itemCard"
         elevation={5}
-        sx={{ minWidth: 300 }}
       >
         <CardContent>
           <Typography
