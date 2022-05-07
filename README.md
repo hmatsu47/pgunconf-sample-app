@@ -37,3 +37,12 @@ VITE_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
 
 - なお SolidJS の標準的な手順では Vite を使うため Supabase の Docs（Quickstart: SolidJS）のとおりに`process.env.XXX`で環境変数を読むことはできない
   - `import.meta.env.XXX`を使う
+
+```sh:開発環境で起動
+npm run dev
+```
+
+### 紹介・解説記事など
+
+- **[SolidJS で Material-UI（SUID）を試してみた](https://zenn.dev/hmatsu47/articles/solidjs-suid-sample)**
+- SolidJS で Supabase の Row Level Security を試す（準備中）
