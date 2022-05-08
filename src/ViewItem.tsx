@@ -12,6 +12,7 @@ import IconButton from '@suid/material/IconButton';
 import Stack from '@suid/material/Stack';
 import Typography from '@suid/material/Typography';
 import { Article } from './types/common';
+import { NoteType } from './commons/NoteType';
 import './Item.css';
 
 type Props = {
@@ -101,7 +102,7 @@ const ViewItem = (props: Props) => {
               aria-label="edit"
               onClick={() => props.setArticle(props.article)}
               disabled={
-                props.article.userId !== props.session.user!.id && props.article.noteType !== 3
+                props.article.userId !== props.session.user!.id && props.article.noteType !== NoteType.Writable
               }
             >
               <EditIcon />

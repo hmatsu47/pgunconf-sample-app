@@ -14,6 +14,7 @@ import Typography from '@suid/material/Typography';
 import Box from '@suid/material/Box';
 import { Article, Message } from './types/common';
 import { setFocus } from './commons/setFocus';
+import { NoteType } from './commons/NoteType';
 import './Item.css';
 
 type Props = {
@@ -36,7 +37,7 @@ export default (props: Props) => {
   const [newArticle, setNewArticle] = createSignal<boolean>(true);
   const [title, setTitle] = createSignal<string>('');
   const [note, setNote] = createSignal<string>('');
-  const [noteType, setNoteType] = createSignal<number>(1);
+  const [noteType, setNoteType] = createSignal<number>(NoteType.Unpermitted);
 
   createEffect(() => {
     setArticle();
@@ -180,13 +181,13 @@ export default (props: Props) => {
               }}
               disabled={!newArticle() && props.session.user!.id !== props.article!.userId}
             >
-              <ToggleButton value="1">
+              <ToggleButton value={NoteType.Unpermitted.toString()}>
                 許可しない
               </ToggleButton>
-              <ToggleButton value="2">
+              <ToggleButton value={NoteType.Readable.toString()}>
                 読み取りのみ
               </ToggleButton>
-              <ToggleButton value="3">
+              <ToggleButton value={NoteType.Writable.toString()}>
                 読み取りと編集
               </ToggleButton>
             </ToggleButtonGroup>
