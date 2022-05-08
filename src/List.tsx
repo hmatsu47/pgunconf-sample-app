@@ -3,17 +3,10 @@ import { Session } from '@supabase/supabase-js';
 import { supabase } from './commons/supabaseClient';
 import Alert from '@suid/material/Alert';
 import Box from '@suid/material/Box';
-import Card from '@suid/material/Card';
-import CardActions from '@suid/material/CardActions';
-import CardContent from '@suid/material/CardContent';
-import DeleteIcon from '@suid/icons-material/Delete';
-import EditIcon from '@suid/icons-material/Edit';
-import ExpandLessIcon from '@suid/icons-material/ExpandLess';
-import ExpandMoreIcon from '@suid/icons-material/ExpandMore';
-import IconButton from '@suid/material/IconButton';
 import Stack from '@suid/material/Stack';
 import Typography from '@suid/material/Typography';
-import Item from './Item';
+import EditItem from './EditItem';
+import ViewItem from './ViewItem';
 import { Article, Message } from './types/common';
 
 type Props = {
@@ -61,13 +54,11 @@ const List = (props: Props) => {
             note: (obj.note ? obj.note : ''),
             noteType: obj.note_type,
             userId: obj.userid,
-            userName: (obj.profiles.username ? obj.profiles.username : ''),
-            isExpand: false
+            userName: (obj.profiles.username ? obj.profiles.username : '')
           };
           return article;
         })
         setArticles(listArticles);
-        resetArticle();
       }
     } catch (error) {
       setMessage({
@@ -79,18 +70,7 @@ const List = (props: Props) => {
     }
   }
 
-  const toggleExpand = (index: number, flag: boolean) => {
-    let tmpArticles: Article[] | undefined = articles();
-    if (!tmpArticles) {
-      return;
-    }
-    setLoading(true);
-    tmpArticles[index].isExpand = flag;
-    setArticles(tmpArticles);
-    setLoading(false);
-  }
-
-  const resetArticle = () => {
+  const resetArticle = async () => {
     setArticle(null);
   }
 
@@ -143,7 +123,7 @@ const List = (props: Props) => {
         direction="column"
       >
         <Box sx={{ padding: "10px 0 0 0" }}>
-          <Item
+          <EditItem
             session={props.session}
             article={article()}
             getArticles={() => getArticles()}
@@ -177,96 +157,13 @@ const List = (props: Props) => {
                   each={articles()}
                   fallback={<></>}
                 >
-                  {(article, index) => 
-                    <Box sx={{ paddingBottom: "4px" }}>
-                      <Card
-                        variant="outlined"
-                        sx={{ minWidth: 300 }}
-                      >
-                        <CardContent>
-                          <Stack
-                            spacing={1}
-                            direction="row"
-                          >
-                            <CardActions sx={{ padding: 0 }}>
-                              <IconButton
-                                onClick={() => toggleExpand(index(), !article.isExpand)}
-                                sx={{ padding: 0 }}
-                              >
-                                <Switch fallback={<></>}>
-                                  <Match when={!article.isExpand}>
-                                    <ExpandMoreIcon aria-label="expand more"/>
-                                  </Match>
-                                  <Match when={article.isExpand}>
-                                    <ExpandLessIcon aria-label="expand less"/>
-                                  </Match>
-                                </Switch>
-                              </IconButton>
-                            </CardActions>
-                            <Typography
-                              variant="h6"
-                              gutterBottom
-                            >
-                              {article.title}
-                            </Typography>
-                            <Typography
-                              variant="subtitle1"
-                              color="text.secondary"
-                              gutterBottom
-                              sx={{ paddingTop: "1px" }}
-                            >
-                              {article.userName}
-                            </Typography>
-                            <Typography
-                              variant="subtitle1"
-                              color="text.secondary"
-                              gutterBottom
-                              sx={{ paddingTop: "1px" }}
-                            >
-                              {article.updatedAt.toLocaleString('ja-JP')}
-                            </Typography>
-                          </Stack>
-                          <Show
-                            when={article.isExpand}
-                            fallback={<></>}
-                          >
-                            <For
-                              each={article.note?.split('\n')}
-                              fallback={<></>}
-                            >
-                              {(line) =>
-                                <Typography
-                                  variant="body1"
-                                  gutterBottom
-                                >
-                                  {line}
-                                </Typography>
-                              }
-                            </For>
-                          </Show>
-                          <CardActions sx={{ padding: 0 }}>
-                            <IconButton
-                              aria-label="edit"
-                              onClick={() => setArticle(article)}
-                              disabled={
-                                article.userId !== props.session.user!.id && article.noteType !== 3
-                              }
-                            >
-                              <EditIcon />
-                            </IconButton>
-                            <IconButton
-                              aria-label="delete"
-                              onClick={() => deleteArticleAction(article.id!)}
-                              disabled={
-                                article.userId !== props.session.user!.id
-                              }
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </CardActions>
-                        </CardContent>
-                      </Card>
-                    </Box>
+                  {(article) => 
+                    <ViewItem
+                      session={props.session}
+                      article={article}
+                      setArticle={setArticle}
+                      deleteArticleAction={deleteArticleAction}
+                    />
                   }
                 </For>
               </Show>

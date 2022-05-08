@@ -99,6 +99,7 @@ export default (props: Props) => {
         severity: 'success',
         text: `投稿を${newArticle() ? '登録' : '更新'}しました。`
       });
+      resetArticle();
     } catch (error) {
       props.setMessage({
         severity: 'error',

@@ -8,8 +8,7 @@ export declare type Article = {
   note?: string,
   noteType: number,
   userId: string,
-  userName: string,
-  isExpand?: boolean
+  userName: string
 }
 // アラートメッセージ
 export declare type Message = {
