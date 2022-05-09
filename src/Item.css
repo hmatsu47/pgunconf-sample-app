@@ -1,6 +1,6 @@
 @media (max-width: 419px) {
-    div#itemCard { min-width: 300px; }
- }
- @media (min-width: 720px) {
-    div#itemCard { min-width: 700px; }
- }
+  div#itemCard { min-width: 300px; }
+}
+@media (min-width: 720px) {
+  div#itemCard { min-width: 700px; }
+}
