@@ -75,6 +75,7 @@ export default function Auth() {
           gutterBottom
         >
           メールアドレスを入力して送信ボタンをクリックしてください。
+          （または「GitHub でログイン」ボタンをクリックしてください）
         </Typography>
       </Box>
       {loading() ? (
