@@ -42,6 +42,24 @@ export default function Auth() {
     }
   }
 
+  const handleLoginGithub = async () => {
+    // GitHub の認証画面へ
+    try {
+      setLoading(true);
+      const { error } = await supabase
+        .auth
+        .signIn({ provider: 'github' });
+      if (error) throw error;
+    } catch (error) {
+      setMessage({
+        severity: 'error',
+        text: `エラーが発生しました : ${error.error_description || error.message}`
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
+
   // メールアドレス入力画面を表示（マジックリンク送信用）
   return (
     <Box
@@ -91,6 +109,14 @@ export default function Auth() {
               endIcon={<SendIcon />}
             >
               メールを送信
+            </Button>
+            <Button
+              variant="contained"
+              aria-live="polite"
+              onClick={() => handleLoginGithub()}
+              sx={{ backgroundColor: "black" }}
+            >
+              GitHub でログイン
             </Button>
             <Show
               when={message().text !== ''}
