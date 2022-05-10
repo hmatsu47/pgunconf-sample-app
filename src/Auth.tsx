@@ -42,8 +42,8 @@ export default function Auth() {
     }
   }
 
-  const handleLoginGithub = async () => {
-    // GitHub の認証画面へ
+  const handleLoginOauth = async (provider: string) => {
+    // 外部の認証画面へ
     try {
       setLoading(true);
       const { error } = await supabase
@@ -113,7 +113,7 @@ export default function Auth() {
             <Button
               variant="contained"
               aria-live="polite"
-              onClick={() => handleLoginGithub()}
+              onClick={() => handleLoginOauth("github")}
               sx={{ backgroundColor: "black" }}
             >
               GitHub でログイン
