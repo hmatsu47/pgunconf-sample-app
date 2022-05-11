@@ -7,6 +7,7 @@ import SendIcon from '@suid/icons-material/Send';
 import Stack from '@suid/material/Stack';
 import TextField from '@suid/material/TextField';
 import Typography from '@suid/material/Typography';
+import GitHubIcon from './GitHubIcon';
 import { Message } from './types/common';
 import { setFocus } from './commons/setFocus';
 
@@ -75,7 +76,6 @@ export default function Auth() {
           gutterBottom
         >
           メールアドレスを入力して送信ボタンをクリックしてください。
-          （または「GitHub でログイン」ボタンをクリックしてください）
         </Typography>
       </Box>
       {loading() ? (
@@ -111,11 +111,18 @@ export default function Auth() {
             >
               メールを送信
             </Button>
+            <Typography
+              variant="body1"
+              gutterBottom
+            >
+              または、「GitHub でログイン」ボタンをクリックしてください。
+            </Typography>
             <Button
               variant="contained"
               aria-live="polite"
               onClick={() => handleLoginOauth("github")}
-              sx={{ backgroundColor: "black" }}
+              endIcon={<GitHubIcon />}
+              sx={{ backgroundColor: "#171515" }}
             >
               GitHub でログイン
             </Button>
