@@ -30,7 +30,10 @@ npm i
 npm install @supabase/supabase-js
 npm install @suid/material
 npm install @suid/icons-material
+npm install @suid/types
 ```
+
+（`@suid/types`は不要だが念のため）
 
 - `.env`ファイル（`pgunconf-sample-app`直下に置く）
 
