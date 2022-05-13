@@ -57,15 +57,15 @@ export default (props: Props) => {
     setLoading(false);
   }
 
-  const resetArticle = () => {
+  const resetArticle = async () => {
     // 投稿内容をリセット
     setLoading(true);
     setNewArticle(true);
     setTitle('');
     setNote('');
     setNoteType(1);
-    props.resetArticle();
     setLoading(false);
+    props.resetArticle();
   }
 
   const addOrUpdateArticle = async (updates: Updates, isInsert: boolean) => {

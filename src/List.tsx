@@ -71,7 +71,9 @@ const List = (props: Props) => {
   }
 
   const resetArticle = async () => {
+    setLoading(true);
     setArticle(null);
+    setLoading(false);
   }
 
   const deleteArticle = async (id: number) => {
@@ -91,6 +93,9 @@ const List = (props: Props) => {
         severity: 'success',
         text: '投稿を削除しました'
       });
+      if (article() && id === article()!.id) {
+        resetArticle();
+      }
     } catch (error) {
       setMessage({
         severity: 'error',
@@ -123,28 +128,28 @@ const List = (props: Props) => {
         direction="column"
       >
         <Box sx={{ padding: "10px 0 0 0" }}>
-          <EditItem
-            session={props.session}
-            article={article()}
-            getArticles={() => getArticles()}
-            resetArticle={() => resetArticle()}
-            setMessage={(message: Message) => setMessage(message)}
-          />
-          <Show
-            when={message().text !== ''}
-            fallback={<></>}
-          >
-            <Box sx={{ padding: "0 0 10px 0" }}>
-              <Alert severity={message().severity}>
-                {message().text}
-              </Alert>
-            </Box>
-          </Show>
           {loading() ? (
             <>
             </>
           ) : (
             <>
+              <EditItem
+                session={props.session}
+                article={article()}
+                getArticles={() => getArticles()}
+                resetArticle={() => resetArticle()}
+                setMessage={(message: Message) => setMessage(message)}
+              />
+              <Show
+                when={message().text !== ''}
+                fallback={<></>}
+              >
+                <Box sx={{ padding: "0 0 10px 0" }}>
+                  <Alert severity={message().severity}>
+                    {message().text}
+                  </Alert>
+                </Box>
+              </Show>
               <Show
                 when={articles() && articles()!.length > 0}
                 fallback={
