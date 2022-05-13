@@ -71,9 +71,7 @@ const List = (props: Props) => {
   }
 
   const resetArticle = async () => {
-    setLoading(true);
     setArticle(null);
-    setLoading(false);
   }
 
   const deleteArticle = async (id: number) => {
