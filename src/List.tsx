@@ -71,6 +71,7 @@ const List = (props: Props) => {
   }
 
   const resetArticle = async () => {
+    // 投稿内容をリセット
     setArticle(null);
   }
 
@@ -92,6 +93,7 @@ const List = (props: Props) => {
         text: '投稿を削除しました'
       });
       if (article() && id === article()!.id) {
+        // 編集中の投稿を削除した場合は編集画面をクリアする
         resetArticle();
       }
     } catch (error) {
