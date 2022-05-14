@@ -65,6 +65,9 @@ export default (props: Props) => {
     setNote('');
     setNoteType(1);
     setLoading(false);
+    if(!props.article) {
+      return;
+    }
     props.resetArticle();
   }
 
@@ -154,17 +157,28 @@ export default (props: Props) => {
           >
             本文 :
           </Typography>
-          <textarea
-            id="note"
-            aria-label="Note"
-            placeholder="本文を入力してください"
-            onchange={(event) => {
-              setNote(event.currentTarget.value);
-            }}
-            style="width: 100%; height: 9.0em; font-size: 1rem; line-height: 1.8em"
-          >
-            {note()}
-          </textarea>
+          {loading() ? (
+            <textarea
+              id="note"
+              aria-label="Note"
+              placeholder="本文を入力してください"
+              disabled={true}
+              style="width: 100%; height: 9.0em; font-size: 1rem; line-height: 1.8em"
+            >
+            </textarea>
+          ) : (
+            <textarea
+              id="note"
+              aria-label="Note"
+              placeholder="本文を入力してください"
+              onchange={(event) => {
+                setNote(event.currentTarget.value);
+              }}
+              style="width: 100%; height: 9.0em; font-size: 1rem; line-height: 1.8em"
+            >
+              {note()}
+            </textarea>
+          )}
           <Box sx={{ padding: "10px 0 10px 0" }}>
             <Typography
               variant="subtitle2"
@@ -179,7 +193,7 @@ export default (props: Props) => {
               onChange={(event, newType) => {
                 setNoteType(Number(newType));
               }}
-              disabled={!newArticle() && props.session.user!.id !== props.article!.userId}
+              disabled={loading() || !newArticle() && props.session.user!.id !== props.article!.userId}
             >
               <ToggleButton value={NoteType.Unpermitted.toString()}>
                 許可しない
