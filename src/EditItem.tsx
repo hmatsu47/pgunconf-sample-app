@@ -65,6 +65,7 @@ export default (props: Props) => {
     setNote('');
     setNoteType(1);
     setLoading(false);
+    setFocus('title');
     if(!props.article) {
       return;
     }
@@ -163,7 +164,6 @@ export default (props: Props) => {
               aria-label="Note"
               placeholder="本文を入力してください"
               disabled={true}
-              style="width: 100%; height: 9.0em; font-size: 1rem; line-height: 1.8em"
             >
             </textarea>
           ) : (
@@ -174,7 +174,6 @@ export default (props: Props) => {
               onchange={(event) => {
                 setNote(event.currentTarget.value);
               }}
-              style="width: 100%; height: 9.0em; font-size: 1rem; line-height: 1.8em"
             >
               {note()}
             </textarea>
