@@ -1,4 +1,5 @@
 import { createSignal, createEffect, Match, Show, Switch } from 'solid-js';
+import { Session } from '@supabase/supabase-js';
 import { supabase } from './commons/supabaseClient';
 import Alert from '@suid/material/Alert';
 import AccountCircleIcon from '@suid/icons-material/AccountCircle';
@@ -6,7 +7,6 @@ import Box from '@suid/material/Box';
 import IconButton from '@suid/material/IconButton';
 import LogoutIcon from '@suid/icons-material/Logout';
 import ViewListIcon from '@suid/icons-material/ViewList';
-import { Session } from '@supabase/supabase-js';
 import AppBar from '@suid/material/AppBar';
 import Stack from '@suid/material/Stack';
 import Toolbar from '@suid/material/Toolbar';
