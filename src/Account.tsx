@@ -104,7 +104,11 @@ const Account = (props: Props) => {
     } catch (error) {
       setMessage({
         severity: 'error',
-        text: `エラーが発生しました : ${error.message}`
+        text: `エラーが発生しました : ${
+          error.error_description ||
+          error.message ||
+          '更新失敗'
+        }`
       });
     } finally {
       setLoading(false);

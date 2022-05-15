@@ -36,7 +36,11 @@ export default function Auth() {
     } catch (error) {
       setMessage({
         severity: 'error',
-        text: `エラーが発生しました : ${error.error_description || error.message}`
+        text: `エラーが発生しました : ${
+          error.error_description ||
+          error.message ||
+          '送信失敗'
+        }`
       });
     } finally {
       setLoading(false);
@@ -54,7 +58,11 @@ export default function Auth() {
     } catch (error) {
       setMessage({
         severity: 'error',
-        text: `エラーが発生しました : ${error.error_description || error.message}`
+        text: `エラーが発生しました : ${
+          error.error_description ||
+          error.message ||
+          '認証失敗'
+        }`
       });
     } finally {
       setLoading(false);

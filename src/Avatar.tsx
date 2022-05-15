@@ -45,7 +45,10 @@ export default (props: Props | null) => {
       }
       props.setMessage({
         severity: 'error',
-        text: `アバター画像のダウンロードに失敗しました : ${error.message}`
+        text: `アバター画像のダウンロードに失敗しました : ${
+          error.error_description ||
+          error.message
+        }`
       });
     }
   }
@@ -85,7 +88,11 @@ export default (props: Props | null) => {
       }
       props.setMessage({
         severity: 'error',
-        text: `エラーが発生しました : ${error.error_description || error.message}`
+        text: `エラーが発生しました : ${
+          error.error_description ||
+          error.message ||
+          'アップロード失敗'
+        }`
       });
     } finally {
       setUploading(false);
@@ -124,7 +131,7 @@ export default (props: Props | null) => {
         <img
           src={avatarUrl()}
           alt={'Avatar'}
-          className="avatar image"
+          class="avatar image"
           style={{ height: props!.size, width: props!.size }}
         />
       )}
@@ -138,7 +145,7 @@ export default (props: Props | null) => {
           </Typography>
         </Box>
       ) : (
-        <label htmlFor="contained-button-file">
+        <label for="contained-button-file">
           <span style="display:none">
             <input
               type="file"
