@@ -39,7 +39,7 @@ const List = (props: Props) => {
           userid,
           profiles (username)
         `)
-        .order(`updated_at`, { ascending: false });
+        .order('updated_at', { ascending: false });
 
       if (error && status !== 406) {
         throw error;
