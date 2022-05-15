@@ -1,4 +1,5 @@
 import { createSignal, onMount, Show } from 'solid-js';
+import { Provider } from '@supabase/supabase-js';
 import { supabase } from './commons/supabaseClient';
 import Alert from '@suid/material/Alert';
 import Box from '@suid/material/Box';
@@ -47,13 +48,13 @@ export default function Auth() {
     }
   }
 
-  const handleLoginOauth = async (provider: string) => {
+  const handleLoginOauth = async (provider: Provider) => {
     // 外部の認証画面へ
     try {
       setLoading(true);
       const { error } = await supabase
         .auth
-        .signIn({ provider: 'github' });
+        .signIn({ provider: provider });
       if (error) throw error;
     } catch (error) {
       setMessage({

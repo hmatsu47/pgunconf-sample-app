@@ -126,7 +126,7 @@ export default (props: Props) => {
       note: note(),
       note_type: noteType(),
       updated_at: new Date(),
-      userid: supabase.auth.user()!.id
+      userid: newArticle() ? supabase.auth.user()!.id : props.article!.userId
     };
     addOrUpdateArticle(updates, newArticle());
   }
