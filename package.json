@@ -19,6 +19,6 @@
     "@suid/material": "^0.2.1",
     "@suid/types": "^0.1.1",
     "@supabase/supabase-js": "^1.35.3",
-    "solid-js": "^1.4.0"
+    "solid-js": "^1.4.1"
   }
 }
