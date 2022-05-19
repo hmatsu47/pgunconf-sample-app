@@ -1,6 +1,8 @@
 import { createSignal, onMount, Show } from 'solid-js';
 import { Provider } from '@supabase/supabase-js';
+import { setFocus } from './commons/setFocus';
 import { supabase } from './commons/supabaseClient';
+import { Message } from './types/common';
 import Alert from '@suid/material/Alert';
 import Box from '@suid/material/Box';
 import Button from '@suid/material/Button';
@@ -9,8 +11,6 @@ import Stack from '@suid/material/Stack';
 import TextField from '@suid/material/TextField';
 import Typography from '@suid/material/Typography';
 import GitHubIcon from './GitHubIcon';
-import { Message } from './types/common';
-import { setFocus } from './commons/setFocus';
 
 export default function Auth() {
   const [loading, setLoading] = createSignal<boolean>(false);

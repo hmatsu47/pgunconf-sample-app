@@ -1,16 +1,18 @@
 import { createSignal, createEffect, For, Match, Show, Switch } from 'solid-js';
 import { Session } from '@supabase/supabase-js';
+import { downloadImage, listImages } from './commons/downloadImage';
 import { supabase } from './commons/supabaseClient';
+import { Article, Message } from './types/common';
 import Alert from '@suid/material/Alert';
 import Box from '@suid/material/Box';
 import Stack from '@suid/material/Stack';
 import Typography from '@suid/material/Typography';
 import EditItem from './EditItem';
 import ViewItem from './ViewItem';
-import { Article, Message } from './types/common';
 
 type Props = {
-  session: Session
+  session: Session,
+  avatars: Map<string, string>
 }
 
 const List = (props: Props) => {
@@ -37,7 +39,10 @@ const List = (props: Props) => {
           note,
           note_type,
           userid,
-          profiles (username)
+          profiles (
+            username,
+            avatar_url
+          )
         `)
         .order('updated_at', { ascending: false });
 
@@ -54,7 +59,8 @@ const List = (props: Props) => {
             note: (obj.note ? obj.note : ''),
             noteType: obj.note_type,
             userId: obj.userid,
-            userName: (obj.profiles.username ? obj.profiles.username : '')
+            userName: (obj.profiles.username ? obj.profiles.username : ''),
+            avatarUrl: (obj.profiles.avatar_url ? obj.profiles.avatar_url : '')
           };
           return article;
         })
@@ -170,6 +176,10 @@ const List = (props: Props) => {
                     <ViewItem
                       session={props.session}
                       article={article}
+                      avatar={
+                        article.avatarUrl && article.avatarUrl !== '' ? (
+                          props.avatars?.get(article.avatarUrl) ? props.avatars.get(article.avatarUrl) : ''
+                        ) : ''}
                       setArticle={setArticle}
                       deleteArticleAction={deleteArticleAction}
                     />

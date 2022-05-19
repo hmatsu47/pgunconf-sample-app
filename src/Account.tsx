@@ -1,6 +1,8 @@
 import { createSignal, createEffect, Accessor, Show } from 'solid-js';
 import { Session } from '@supabase/supabase-js';
+import { setFocus } from './commons/setFocus';
 import { supabase } from './commons/supabaseClient';
+import { Message } from './types/common';
 import Alert from '@suid/material/Alert';
 import Box from '@suid/material/Box';
 import Button from '@suid/material/Button';
@@ -8,13 +10,12 @@ import SaveIcon from '@suid/icons-material/Save';
 import Stack from '@suid/material/Stack';
 import TextField from '@suid/material/TextField';
 import Typography from '@suid/material/Typography';
-import Avatar from './Avatar';
-import { Message } from './types/common';
-import { setFocus } from './commons/setFocus';
+import EditAvatar from './EditAvatar';
 
 type Props = {
   session: Session,
-  getProfiled: () => void
+  getProfiled: () => void,
+  getAvatarImages: () => void
 }
 type UpdateParams = {
   username: Accessor<string>,
@@ -140,7 +141,7 @@ const Account = (props: Props) => {
           ) : (
             <>
               <Stack direction="row">
-                <Avatar
+                <EditAvatar
                   url={avatarUrl()}
                   size={"150px"}
                   onUpload={(url: string) => {
@@ -154,6 +155,7 @@ const Account = (props: Props) => {
                   setMessage={(message: Message) => {
                     setMessage(message);
                   }}
+                  getAvatarImages={props.getAvatarImages}
                 />
                 <Typography
                   variant="body1"

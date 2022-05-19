@@ -1,57 +1,39 @@
 import { createEffect, createSignal } from 'solid-js';
+import { downloadImage } from './commons/downloadImage';
 import { supabase } from './commons/supabaseClient';
+import { Message } from './types/common';
 import Button from '@suid/material/Button';
 import Stack from '@suid/material/Stack';
 import Typography from '@suid/material/Typography';
 import Box from '@suid/material/Box';
 import UploadIcon from '@suid/icons-material/Upload';
 import useTheme from '@suid/material/styles/useTheme';
-import { Message } from './types/common';
 
 type Props = {
   url: string,
   size: string,
   onUpload: (url: string) => void,
-  setMessage: (message: Message) => void
+  setMessage: (message: Message) => void,
+  getAvatarImages: () => void
 }
 
 export default (props: Props | null) => {
   const [avatarUrl, setAvatarUrl] = createSignal<string>('');
   const [uploading, setUploading] = createSignal<boolean>(false);
 
-  createEffect(() => {
+  createEffect(async () => {
     if (!props) {
       return;
     }
     // 画像 URL が指定されていたらアバター画像をダウンロード
-    if (props.url) downloadImage(props.url);
-  })
-
-  const downloadImage = async (path: string) => {
-    // アバター画像をダウンロード（ストレージから）
-    try {
-      const { data, error } = await supabase
-        .storage
-        .from('avatars')
-        .download(path);
-      if (error) {
-        throw error;
-      }
-      const url = URL.createObjectURL(data);
-      setAvatarUrl(url);
-    } catch (error) {
-      if (!props) {
+    if (props.url) {
+      const url = await downloadImage(props.url, props.setMessage);
+      if (!url) {
         return;
       }
-      props.setMessage({
-        severity: 'error',
-        text: `アバター画像のダウンロードに失敗しました : ${
-          error.error_description ||
-          error.message
-        }`
-      });
+      setAvatarUrl(url);
     }
-  }
+  })
 
   const uploadAvatar = async (event: Event) => {
     // アバター画像をアップロード
@@ -81,7 +63,8 @@ export default (props: Props | null) => {
       if (!props) {
         return;
       }
-      props.onUpload(filePath);
+      await props.getAvatarImages();
+      await props.onUpload(filePath);
     } catch (error) {
       if (!props) {
         return;

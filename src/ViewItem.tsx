@@ -1,5 +1,8 @@
 import { createSignal, For, Match, Show, Switch } from 'solid-js';
 import { Session } from '@supabase/supabase-js';
+import { NoteType } from './commons/NoteType';
+import { Article } from './types/common';
+import Avatar from '@suid/material/Avatar';
 import Box from '@suid/material/Box';
 import Card from '@suid/material/Card';
 import CardActions from '@suid/material/CardActions';
@@ -9,15 +12,15 @@ import EditIcon from '@suid/icons-material/Edit';
 import ExpandLessIcon from '@suid/icons-material/ExpandLess';
 import ExpandMoreIcon from '@suid/icons-material/ExpandMore';
 import IconButton from '@suid/material/IconButton';
+import PersonIcon from '@suid/icons-material/Person';
 import Stack from '@suid/material/Stack';
 import Typography from '@suid/material/Typography';
-import { Article } from './types/common';
-import { NoteType } from './commons/NoteType';
 import './Item.css';
 
 type Props = {
   session: Session,
   article: Article,
+  avatar?: string,
   setArticle: (article: Article) => void,
   deleteArticleAction: (id: number) => void
 }
@@ -62,6 +65,29 @@ const ViewItem = (props: Props) => {
             >
               {props.article.title}
             </Typography>
+            <Show
+              when={props.avatar && props.avatar !== ''}
+              fallback={
+                <Avatar
+                  alt={props.article.userName}
+                  sx={{
+                    width: 28,
+                    height: 28
+                  }}
+                >
+                  <PersonIcon />
+                </Avatar>
+              }
+            >
+              <Avatar
+                alt={props.article.userName}
+                src={props.avatar}
+                sx={{
+                  width: 28,
+                  height: 28
+                }}
+              />
+            </Show>
             <Typography
               variant="subtitle1"
               color="text.secondary"

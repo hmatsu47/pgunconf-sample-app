@@ -1,6 +1,9 @@
 import { createEffect, createSignal } from 'solid-js';
 import { Session } from '@supabase/supabase-js';
+import { NoteType } from './commons/NoteType';
+import { setFocus } from './commons/setFocus';
 import { supabase } from './commons/supabaseClient';
+import { Article, Message } from './types/common';
 import Button from '@suid/material/Button';
 import CancelIcon from '@suid/icons-material/Cancel';
 import Card from '@suid/material/Card';
@@ -12,9 +15,6 @@ import ToggleButton from '@suid/material/ToggleButton';
 import ToggleButtonGroup from '@suid/material/ToggleButtonGroup';
 import Typography from '@suid/material/Typography';
 import Box from '@suid/material/Box';
-import { Article, Message } from './types/common';
-import { setFocus } from './commons/setFocus';
-import { NoteType } from './commons/NoteType';
 import './Item.css';
 
 type Props = {

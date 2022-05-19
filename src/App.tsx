@@ -1,6 +1,8 @@
 import { createSignal, createEffect, Match, Show, Switch } from 'solid-js';
 import { Session } from '@supabase/supabase-js';
+import { downloadImage, listImages } from './commons/downloadImage';
 import { supabase } from './commons/supabaseClient';
+import { Message } from './types/common';
 import Alert from '@suid/material/Alert';
 import AccountCircleIcon from '@suid/icons-material/AccountCircle';
 import Box from '@suid/material/Box';
@@ -14,22 +16,34 @@ import Typography from '@suid/material/Typography';
 import Account from './Account';
 import Auth from './Auth';
 import List from './List';
-import { Message } from './types/common';
 
 export default () => {
   const [session, setSession] = createSignal<Session | null>(null);
   const [profiled, setProfiled] = createSignal<boolean>(false);
+  const [avatars, setAvatars] = createSignal<Map<string, string>>();
   const [message, setMessage] = createSignal<Message>({ severity: 'info', text: '' });
   const [route, setRoute] = createSignal<string>('');
 
   createEffect(() => {
     setSession(supabase.auth.session());
+    getAvatarImages();
     // 認証状態が変化したら Session を更新
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       getProfiled();
     })
   })
+
+  const getAvatarImages = async () => {
+    // アバター画像を取得（ストレージから）
+    const imageMap = new Map<string, string>();
+    const imageNames = await listImages(setMessage);
+    imageNames?.forEach(async name => {
+      const url = await downloadImage(name, setMessage);
+      imageMap.set(name, (url ? url : ''));
+    });
+    setAvatars(imageMap);
+  }
 
   const getProfiled = async () => {
     // プロフィールがあるか？（DB で検索）
@@ -143,14 +157,18 @@ export default () => {
               <Match when={!session()}>
                 <Auth />
               </Match>
-              <Match when={route() === 'profile'}>
+              <Match when={route() === 'profile' && avatars()}>
                 <Account
                   session={session()!}
                   getProfiled={() => getProfiled()}
+                  getAvatarImages={() => getAvatarImages()}
                 />
               </Match>
-              <Match when={route() === 'list'}>
-                <List session={session()!} />
+              <Match when={route() === 'list' && avatars()}>
+                <List
+                session={session()!}
+                avatars={avatars()!}
+              />
               </Match>
             </Switch>
             <Show
