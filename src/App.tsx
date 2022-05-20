@@ -20,6 +20,7 @@ import List from './List';
 export default () => {
   const [session, setSession] = createSignal<Session | null>(null);
   const [profiled, setProfiled] = createSignal<boolean>(false);
+  const [avatarLoaded, setAvatarLoaded] = createSignal<boolean>(false);
   const [avatars, setAvatars] = createSignal<Map<string, string>>();
   const [message, setMessage] = createSignal<Message>({ severity: 'info', text: '' });
   const [route, setRoute] = createSignal<string>('');
@@ -43,6 +44,7 @@ export default () => {
       imageMap.set(name, (url ? url : ''));
     });
     setAvatars(imageMap);
+    setAvatarLoaded(true);
   }
 
   const getProfiled = async () => {
@@ -157,14 +159,14 @@ export default () => {
               <Match when={!session()}>
                 <Auth />
               </Match>
-              <Match when={route() === 'profile' && avatars()}>
+              <Match when={route() === 'profile' && avatarLoaded()}>
                 <Account
                   session={session()!}
                   getProfiled={() => getProfiled()}
                   getAvatarImages={() => getAvatarImages()}
                 />
               </Match>
-              <Match when={route() === 'list' && avatars()}>
+              <Match when={route() === 'list' && avatarLoaded()}>
                 <List
                 session={session()!}
                 avatars={avatars()!}
