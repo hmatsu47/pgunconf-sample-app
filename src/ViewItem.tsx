@@ -12,7 +12,6 @@ import EditIcon from '@suid/icons-material/Edit';
 import ExpandLessIcon from '@suid/icons-material/ExpandLess';
 import ExpandMoreIcon from '@suid/icons-material/ExpandMore';
 import IconButton from '@suid/material/IconButton';
-import PersonIcon from '@suid/icons-material/Person';
 import Stack from '@suid/material/Stack';
 import Typography from '@suid/material/Typography';
 import './Item.css';
@@ -65,29 +64,14 @@ const ViewItem = (props: Props) => {
             >
               {props.article.title}
             </Typography>
-            <Show
-              when={props.avatar && props.avatar !== ''}
-              fallback={
-                <Avatar
-                  alt={props.article.userName}
-                  sx={{
-                    width: 28,
-                    height: 28
-                  }}
-                >
-                  <PersonIcon />
-                </Avatar>
-              }
-            >
-              <Avatar
-                alt={props.article.userName}
-                src={props.avatar}
-                sx={{
-                  width: 28,
-                  height: 28
-                }}
-              />
-            </Show>
+            <Avatar
+              alt={props.article.userName}
+              src={props.avatar}
+              sx={{
+                width: 28,
+                height: 28
+              }}
+            />
             <Typography
               variant="subtitle1"
               color="text.secondary"
