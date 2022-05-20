@@ -2,7 +2,8 @@ import { supabase } from './supabaseClient';
 import { Message } from '../types/common';
 
 export const downloadImage = async (
-  path: string, setMessage: (message: Message) => void
+  path: string,
+  setMessage: (message: Message) => void
 ) => {
   // アバター画像をダウンロード（ストレージから）
   try {

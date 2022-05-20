@@ -4,6 +4,7 @@ import { downloadImage, listImages } from './commons/downloadImage';
 import { supabase } from './commons/supabaseClient';
 import { Message } from './types/common';
 import Alert from '@suid/material/Alert';
+import Avatar from '@suid/material/Avatar';
 import AccountCircleIcon from '@suid/icons-material/AccountCircle';
 import Box from '@suid/material/Box';
 import IconButton from '@suid/material/IconButton';
@@ -22,6 +23,7 @@ export default () => {
   const [profiled, setProfiled] = createSignal<boolean>(false);
   const [avatarLoaded, setAvatarLoaded] = createSignal<boolean>(false);
   const [avatars, setAvatars] = createSignal<Map<string, string>>();
+  const [userAvatarUrl, setUserAvatarUrl] = createSignal<string | null>(null);
   const [message, setMessage] = createSignal<Message>({ severity: 'info', text: '' });
   const [route, setRoute] = createSignal<string>('');
 
@@ -56,7 +58,7 @@ export default () => {
 
       const { data, error, status } = await supabase
         .from('profiles')
-        .select(`username`)
+        .select(`username, avatar_url`)
         .eq('id', session()!.user!.id)
         .single();
 
@@ -64,6 +66,15 @@ export default () => {
         throw error;
       }
       if (data) {
+        // プロフィールあり
+        if (data.avatar_url) {
+          // アバターあり→タイトルバーのアバターをセット
+          const name: string = data.avatar_url;
+          const url: string | undefined = await downloadImage(name, setMessage);
+          if (url) {
+            setUserAvatarUrl(url);
+          }
+        }
         setProfiled(true);
         if (route() === '') {
           setRoute('list');
@@ -127,14 +138,24 @@ export default () => {
                 sx={{ mr: 1 }}
                 onClick={() => setRoute('profile')}
               >
-                <AccountCircleIcon />
+                <Show
+                  when={userAvatarUrl()}
+                  fallback={<AccountCircleIcon />}
+                >
+                  <Avatar
+                    src={userAvatarUrl()!}
+                    sx={{
+                      width: 32,
+                      height: 32
+                    }}
+                  />
+                </Show>
               </IconButton>
               <IconButton
                 size="large"
                 edge="start"
                 color="inherit"
                 aria-label="sign out"
-                // sx={{ mr: 2 }}
                 onClick={() => supabase.auth.signOut()}
               >
                 <LogoutIcon />

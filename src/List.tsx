@@ -1,6 +1,5 @@
 import { createSignal, createEffect, For, Match, Show, Switch } from 'solid-js';
 import { Session } from '@supabase/supabase-js';
-import { downloadImage, listImages } from './commons/downloadImage';
 import { supabase } from './commons/supabaseClient';
 import { Article, Message } from './types/common';
 import Alert from '@suid/material/Alert';
