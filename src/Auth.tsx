@@ -131,7 +131,10 @@ export default function Auth() {
               aria-live="polite"
               onClick={() => handleLoginOauth("github")}
               endIcon={<GitHubIcon />}
-              sx={{ backgroundColor: "#171515" }}
+              sx={{
+                backgroundColor: "#171515",
+                textTransform: 'none'
+              }}
             >
               GitHub でログイン
             </Button>
