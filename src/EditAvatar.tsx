@@ -2,10 +2,10 @@ import { createEffect, createSignal } from 'solid-js';
 import { downloadImage } from './commons/downloadImage';
 import { supabase } from './commons/supabaseClient';
 import { Message } from './types/common';
+import Box from '@suid/material/Box';
 import Button from '@suid/material/Button';
 import Stack from '@suid/material/Stack';
 import Typography from '@suid/material/Typography';
-import Box from '@suid/material/Box';
 import UploadIcon from '@suid/icons-material/Upload';
 import useTheme from '@suid/material/styles/useTheme';
 

@@ -1,14 +1,14 @@
 import { Accessor, Setter, Show } from 'solid-js';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from './commons/supabaseClient';
-import Avatar from '@suid/material/Avatar';
 import AccountCircleIcon from '@suid/icons-material/AccountCircle';
+import AppBar from '@suid/material/AppBar';
+import Avatar from '@suid/material/Avatar';
 import IconButton from '@suid/material/IconButton';
 import LogoutIcon from '@suid/icons-material/Logout';
-import ViewListIcon from '@suid/icons-material/ViewList';
-import AppBar from '@suid/material/AppBar';
 import Toolbar from '@suid/material/Toolbar';
 import Typography from '@suid/material/Typography';
+import ViewListIcon from '@suid/icons-material/ViewList';
 
 type Props = {
   session: Accessor<Session | null>,
