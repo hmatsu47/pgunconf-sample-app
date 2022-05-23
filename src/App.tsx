@@ -65,23 +65,24 @@ export default () => {
       if (error && status !== 406) {
         throw error;
       }
-      if (data) {
-        // プロフィールあり
-        if (data.avatar_url) {
-          // アバターあり→タイトルバーのアバターをセット
-          const name: string = data.avatar_url;
-          const url: string | undefined = await downloadImage(name, setMessage);
-          if (url) {
-            setUserAvatarUrl(url);
-          }
-        }
-        setProfiled(true);
-        if (route() === '') {
-          setRoute('list');
-        }
-      } else {
+      if (!data) {
+        // プロフィールなし→プロフィール画面へ
         setProfiled(false);
         setRoute('profile');
+        return;
+      }
+      // プロフィールあり
+      if (data.avatar_url) {
+        // アバターあり→タイトルバーのアバターをセット
+        const name: string = data.avatar_url;
+        const url: string | undefined = await downloadImage(name, setMessage);
+        if (url) {
+          setUserAvatarUrl(url);
+        }
+      }
+      setProfiled(true);
+      if (route() === '') {
+        setRoute('list');
       }
     } catch (error) {
       setMessage({
