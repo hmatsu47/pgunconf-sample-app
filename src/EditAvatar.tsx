@@ -1,4 +1,4 @@
-import { createEffect, createSignal } from 'solid-js';
+import { createEffect, createSignal, Setter } from 'solid-js';
 import { downloadImage } from './commons/downloadImage';
 import { supabase } from './commons/supabaseClient';
 import { Message } from './types/common';
@@ -13,7 +13,7 @@ type Props = {
   url: string,
   size: string,
   onUpload: (url: string) => void,
-  setMessage: (message: Message) => void,
+  setMessage: Setter<Message>,
   getAvatarImages: () => void
 }
 

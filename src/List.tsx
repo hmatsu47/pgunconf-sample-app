@@ -147,7 +147,7 @@ const List = (props: Props) => {
                 article={article()}
                 getArticles={() => getArticles()}
                 resetArticle={() => resetArticle()}
-                setMessage={(message: Message) => setMessage(message)}
+                setMessage={setMessage}
               />
               <Show
                 when={message().text !== ''}

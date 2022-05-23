@@ -1,4 +1,4 @@
-import { createEffect, createSignal } from 'solid-js';
+import { createEffect, createSignal, Setter } from 'solid-js';
 import { Session } from '@supabase/supabase-js';
 import { NoteType } from './commons/NoteType';
 import { setFocus } from './commons/setFocus';
@@ -22,7 +22,7 @@ type Props = {
   article: Article | null,
   getArticles: () => void,
   resetArticle: () => void,
-  setMessage: (message: Message) => void
+  setMessage: Setter<Message>
 }
 type Updates = {
   title: string,

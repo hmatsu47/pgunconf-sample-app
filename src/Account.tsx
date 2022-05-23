@@ -152,9 +152,7 @@ const Account = (props: Props) => {
                       avatarUrl: url
                     });
                   }}
-                  setMessage={(message: Message) => {
-                    setMessage(message);
-                  }}
+                  setMessage={setMessage}
                   getAvatarImages={props.getAvatarImages}
                 />
                 <Typography

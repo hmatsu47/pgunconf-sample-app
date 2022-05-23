@@ -1,4 +1,4 @@
-import { createSignal, For, Match, Show, Switch } from 'solid-js';
+import { createSignal, For, Match, Setter, Show, Switch } from 'solid-js';
 import { Session } from '@supabase/supabase-js';
 import { NoteType } from './commons/NoteType';
 import { Article } from './types/common';
@@ -20,7 +20,7 @@ type Props = {
   session: Session,
   article: Article,
   avatar?: string,
-  setArticle: (article: Article) => void,
+  setArticle: Setter<Article>,
   deleteArticleAction: (id: number) => void
 }
 
