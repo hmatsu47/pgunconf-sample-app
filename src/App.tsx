@@ -4,19 +4,12 @@ import { downloadImage, listImages } from './commons/downloadImage';
 import { supabase } from './commons/supabaseClient';
 import { Message } from './types/common';
 import Alert from '@suid/material/Alert';
-import Avatar from '@suid/material/Avatar';
-import AccountCircleIcon from '@suid/icons-material/AccountCircle';
 import Box from '@suid/material/Box';
-import IconButton from '@suid/material/IconButton';
-import LogoutIcon from '@suid/icons-material/Logout';
-import ViewListIcon from '@suid/icons-material/ViewList';
-import AppBar from '@suid/material/AppBar';
 import Stack from '@suid/material/Stack';
-import Toolbar from '@suid/material/Toolbar';
-import Typography from '@suid/material/Typography';
 import Account from './Account';
 import Auth from './Auth';
 import List from './List';
+import TitleBar from './TitleBar';
 
 export default () => {
   const [session, setSession] = createSignal<Session | null>(null);
@@ -103,67 +96,12 @@ export default () => {
         href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
       />
       <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1 }}
-            >
-              Supabase (RLS) + SolidJS のサンプル
-            </Typography>
-            <Show
-              when={session() && profiled()}
-              fallback={<></>}
-            >
-              <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="list"
-                sx={{ mr: 1 }}
-                onClick={() => setRoute('list')}
-              >
-                <ViewListIcon />
-              </IconButton>
-            </Show>
-            <Show
-              when={session()}
-              fallback={<></>}
-            >
-              <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="profile"
-                sx={{ mr: 1 }}
-                onClick={() => setRoute('profile')}
-              >
-                <Show
-                  when={userAvatarUrl()}
-                  fallback={<AccountCircleIcon />}
-                >
-                  <Avatar
-                    src={userAvatarUrl()!}
-                    sx={{
-                      width: 32,
-                      height: 32
-                    }}
-                  />
-                </Show>
-              </IconButton>
-              <IconButton
-                size="large"
-                edge="start"
-                color="inherit"
-                aria-label="sign out"
-                onClick={() => supabase.auth.signOut()}
-              >
-                <LogoutIcon />
-              </IconButton>
-            </Show>
-          </Toolbar>
-        </AppBar>
+        <TitleBar
+          session={session}
+          profiled={profiled}
+          userAvatarUrl={userAvatarUrl}
+          setRoute={setRoute}
+        />
         <Box
           sx={{
             width: "100%",
