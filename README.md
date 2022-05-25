@@ -16,7 +16,6 @@
     - https://www.supabase.jp/docs/guides/auth/auth-github
   - プロバイダ名の指定を変えるだけで Twitter などにも対応可能
     - ただし Twitter は http://localhost:3000/ への遷移を許可しないので（http と localhost が NG）気軽に手元で試すことはできない
-      - 
 - RLS を使って以下の 3 種類の情報を登録・表示・編集・削除
   - 1 : ログインユーザ本人のみ登録・表示・編集・削除が可能
   - 2 : ログインユーザ以外も表示が可能
