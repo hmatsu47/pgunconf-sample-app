@@ -96,21 +96,32 @@ const List = (props: Props) => {
       if (error) {
         throw error;
       }
-      getArticles();
+      setLoading(true);
+      removeItemFromArticles(id);
+      if (article() && id === article()!.id) {
+        // 編集中の投稿を削除した場合は編集画面をクリアする
+        await resetArticle();
+      }
       setMessage({
         severity: 'success',
         text: '投稿を削除しました'
       });
-      if (article() && id === article()!.id) {
-        // 編集中の投稿を削除した場合は編集画面をクリアする
-        resetArticle();
-      }
     } catch (error) {
       setMessage({
         severity: 'error',
         text: `エラーが発生しました : ${error.error_description || error.message}`
       });
+    } finally {
+      setLoading(false);
     }
+  }
+
+  const removeItemFromArticles = (id: number) => {
+    // 一覧から対象の投稿を削除
+    const resultList = articles()?.filter((item: Article) => {
+      return (item.id !== id);
+    });
+    setArticles(resultList ? resultList : []);
   }
 
   const deleteArticleAction = (id: number) => {
