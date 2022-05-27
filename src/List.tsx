@@ -84,6 +84,14 @@ const List = (props: Props) => {
     setArticle(null);
   }
 
+  const removeItemFromArticles = (id: number) => {
+    // 一覧から対象の投稿を削除
+    const resultList = articles()?.filter((item: Article) => {
+      return (item.id !== id);
+    });
+    setArticles(resultList ? resultList : []);
+  }
+
   const deleteArticle = async (id: number) => {
     // 投稿削除（DB から）
     try {
@@ -114,14 +122,6 @@ const List = (props: Props) => {
     } finally {
       setLoading(false);
     }
-  }
-
-  const removeItemFromArticles = (id: number) => {
-    // 一覧から対象の投稿を削除
-    const resultList = articles()?.filter((item: Article) => {
-      return (item.id !== id);
-    });
-    setArticles(resultList ? resultList : []);
   }
 
   const deleteArticleAction = (id: number) => {
