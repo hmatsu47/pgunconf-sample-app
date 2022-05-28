@@ -33,6 +33,11 @@ type Updates = {
   updated_at: Date,
   userid: string
 }
+type Author = {
+  id: number,
+  updated_at: Date,
+  userid: string
+}
 
 export default (props: Props) => {
   const [loading, setLoading] = createSignal<boolean>(false);
@@ -45,7 +50,6 @@ export default (props: Props) => {
 
   createEffect(() => {
     setArticle();
-    console.log(avatarUrl());
     setFocus('title');
   })
 
@@ -95,7 +99,7 @@ export default (props: Props) => {
         return;
       }
       setLoading(true);
-
+      // 投稿自体を登録・更新
       const { data, error } = await (isInsert ? (
         supabase
           .from('articles')
@@ -109,6 +113,24 @@ export default (props: Props) => {
 
       if (error) {
         throw error;
+      }
+      if (isInsert) {
+        // 新規投稿→投稿者を登録
+        const author: Author = {
+          id: data![0]?.id!,
+          updated_at: new Date(data![0]?.updated_at),
+          userid: props.session.user!.id
+        };
+        const { error } = await supabase
+          .from('authors')
+          .insert(author, {
+            returning: 'minimal',
+          }
+        );
+  
+        if (error) {
+          throw error;
+        }
       }
       // 画面の一覧を更新
       const article: Article = {

@@ -75,3 +75,38 @@ create policy "Users can delete their own articles."
   using ( ( auth.uid() = articles.userid ) );
 
 alter table articles add foreign key (userid) references profiles;
+
+-- articles の誤更新防止
+create table authors (
+  id bigint not null,
+  updated_at timestamp with time zone,
+  userid uuid not null,
+
+  primary key (id)
+);
+
+alter table authors enable row level security;
+
+create policy "Authenticated Users can view all article-authors."
+  on authors for select
+  using ( auth.role() = 'authenticated' );
+
+create policy "Users can insert their own article-authors."
+  on authors for insert
+  with check ( auth.uid() = authors.userid );
+
+create policy "Users can delete their own article-authors."
+  on authors for delete
+  using ( ( auth.uid() = authors.userid ) );
+
+alter table authors add foreign key (id) references articles;
+
+alter policy "Users can update their own articles or free-updatable articles."
+  on articles
+  using ( (
+            ( auth.uid() = articles.userid ) or ( articles.note_type = 3 )
+          ) and
+          ( articles.userid = (
+            select userid from authors where articles.id = authors.id)
+          )
+        );
