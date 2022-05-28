@@ -94,7 +94,10 @@ const ViewItem = (props: Props) => {
             when={expand()}
             fallback={<></>}
           >
-            <Fade in={expand()}>
+            <Fade
+              in={expand()}
+              timeout={500}
+            >
               <Box>
                 <For
                   each={props.article.note?.split('\n')}
