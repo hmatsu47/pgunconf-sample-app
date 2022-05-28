@@ -13,9 +13,10 @@ import TitleBar from './TitleBar';
 
 export default () => {
   const [session, setSession] = createSignal<Session | null>(null);
-  const [profiled, setProfiled] = createSignal<boolean>(false);
   const [avatarLoaded, setAvatarLoaded] = createSignal<boolean>(false);
   const [avatars, setAvatars] = createSignal<Map<string, string>>();
+  const [userName, setUserName] = createSignal<string | null>(null);
+  const [userAvatarName, setUserAvatarName] = createSignal<string | null>(null);
   const [userAvatarUrl, setUserAvatarUrl] = createSignal<string | null>(null);
   const [message, setMessage] = createSignal<Message>({ severity: 'info', text: '' });
   const [route, setRoute] = createSignal<string>('');
@@ -60,7 +61,6 @@ export default () => {
       }
       if (!data) {
         // プロフィールなし→プロフィール画面へ
-        setProfiled(false);
         setRoute('profile');
         return;
       }
@@ -73,7 +73,8 @@ export default () => {
           setUserAvatarUrl(url);
         }
       }
-      setProfiled(true);
+      setUserAvatarName(data.avatar_url ? data.avatar_url : '');
+      setUserName(data.username);
       if (route() === '') {
         setRoute('list');
       }
@@ -98,7 +99,7 @@ export default () => {
       <Box sx={{ flexGrow: 1 }}>
         <TitleBar
           session={session}
-          profiled={profiled}
+          userName={userName}
           userAvatarUrl={userAvatarUrl}
           setRoute={setRoute}
         />
@@ -122,13 +123,16 @@ export default () => {
               <Match when={route() === 'profile' && avatarLoaded()}>
                 <Account
                   session={session()!}
-                  getProfiled={() => getProfiled()}
+                  setUserName={setUserName}
+                  setUserAvatarUrl={setUserAvatarUrl}
                   getAvatarImages={() => getAvatarImages()}
                 />
               </Match>
               <Match when={route() === 'list' && avatarLoaded()}>
                 <List
                 session={session()!}
+                userName={userName()!}
+                userAvatarName={userAvatarName()!}
                 avatars={avatars()!}
               />
               </Match>

@@ -6,8 +6,8 @@ import Box from '@suid/material/Box';
 import Button from '@suid/material/Button';
 import Stack from '@suid/material/Stack';
 import Typography from '@suid/material/Typography';
-import UploadIcon from '@suid/icons-material/Upload';
 import useTheme from '@suid/material/styles/useTheme';
+import UploadIcon from '@suid/icons-material/Upload';
 
 type Props = {
   url: string,

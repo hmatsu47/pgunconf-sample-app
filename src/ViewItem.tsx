@@ -7,13 +7,14 @@ import Box from '@suid/material/Box';
 import Card from '@suid/material/Card';
 import CardActions from '@suid/material/CardActions';
 import CardContent from '@suid/material/CardContent';
+import Fade from '@suid/material/Fade';
+import IconButton from '@suid/material/IconButton';
+import Stack from '@suid/material/Stack';
+import Typography from '@suid/material/Typography';
 import DeleteIcon from '@suid/icons-material/Delete';
 import EditIcon from '@suid/icons-material/Edit';
 import ExpandLessIcon from '@suid/icons-material/ExpandLess';
 import ExpandMoreIcon from '@suid/icons-material/ExpandMore';
-import IconButton from '@suid/material/IconButton';
-import Stack from '@suid/material/Stack';
-import Typography from '@suid/material/Typography';
 import './Item.css';
 
 type Props = {
@@ -93,19 +94,23 @@ const ViewItem = (props: Props) => {
             when={expand()}
             fallback={<></>}
           >
-            <For
-              each={props.article.note?.split('\n')}
-              fallback={<></>}
-            >
-              {(line) =>
-                <Typography
-                  variant="body1"
-                  gutterBottom
+            <Fade in={expand()}>
+              <Box>
+                <For
+                  each={props.article.note?.split('\n')}
+                  fallback={<></>}
                 >
-                  {line}
-                </Typography>
-              }
-            </For>
+                  {(line) =>
+                    <Typography
+                      variant="body1"
+                      gutterBottom
+                    >
+                      {line}
+                    </Typography>
+                  }
+                </For>
+              </Box>
+            </Fade>
           </Show>
           <CardActions sx={{ padding: 0 }}>
             <IconButton

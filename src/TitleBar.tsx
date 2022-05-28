@@ -1,18 +1,19 @@
 import { Accessor, Setter, Show } from 'solid-js';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from './commons/supabaseClient';
-import AccountCircleIcon from '@suid/icons-material/AccountCircle';
 import AppBar from '@suid/material/AppBar';
 import Avatar from '@suid/material/Avatar';
+import Box from '@suid/material/Box';
 import IconButton from '@suid/material/IconButton';
-import LogoutIcon from '@suid/icons-material/Logout';
 import Toolbar from '@suid/material/Toolbar';
 import Typography from '@suid/material/Typography';
+import AccountCircleIcon from '@suid/icons-material/AccountCircle';
+import LogoutIcon from '@suid/icons-material/Logout';
 import ViewListIcon from '@suid/icons-material/ViewList';
 
 type Props = {
   session: Accessor<Session | null>,
-  profiled: Accessor<boolean>,
+  userName: Accessor<string | null>,
   userAvatarUrl: Accessor<string | null>,
   setRoute: Setter<string>
 }
@@ -29,54 +30,61 @@ const TitleBar = (props: Props) => {
           Supabase (RLS) + SolidJS のサンプル
         </Typography>
         <Show
-          when={props.session() && props.profiled()}
+          when={props.session() && props.userName()}
           fallback={<></>}
         >
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="list"
-            sx={{ mr: 1 }}
-            onClick={() => props.setRoute('list')}
-          >
-            <ViewListIcon />
-          </IconButton>
+          <Box title="list">
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="list"
+              sx={{ mr: 1 }}
+              onClick={() => props.setRoute('list')}
+            >
+              <ViewListIcon />
+            </IconButton>
+          </Box>
         </Show>
         <Show
           when={props.session()}
           fallback={<></>}
         >
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="profile"
-            sx={{ mr: 1 }}
-            onClick={() => props.setRoute('profile')}
-          >
+          <Box title={props.userName()! || 'profile'}>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="profile"
+              sx={{ mr: 1 }}
+              onClick={() => props.setRoute('profile')}
+            >
             <Show
               when={props.userAvatarUrl()}
               fallback={<AccountCircleIcon />}
             >
-              <Avatar
-                src={props.userAvatarUrl()!}
-                sx={{
-                  width: 32,
-                  height: 32
-                }}
-              />
-            </Show>
-          </IconButton>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="sign out"
-            onClick={() => supabase.auth.signOut()}
-          >
-            <LogoutIcon />
-          </IconButton>
+                <Avatar
+                  src={props.userAvatarUrl()!}
+                  sx={{
+                    width: 32,
+                    height: 32
+                  }}
+                  alt={props.userName()!}
+                />
+              </Show>
+            </IconButton>
+          </Box>
+          <Box title="sign out">
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="sign out"
+              onClick={() => supabase.auth.signOut()}
+            >
+              <LogoutIcon />
+            </IconButton>
+          </Box>
         </Show>
       </Toolbar>
     </AppBar>

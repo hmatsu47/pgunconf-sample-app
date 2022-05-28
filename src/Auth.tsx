@@ -6,10 +6,10 @@ import { Message } from './types/common';
 import Alert from '@suid/material/Alert';
 import Box from '@suid/material/Box';
 import Button from '@suid/material/Button';
-import SendIcon from '@suid/icons-material/Send';
 import Stack from '@suid/material/Stack';
 import TextField from '@suid/material/TextField';
 import Typography from '@suid/material/Typography';
+import SendIcon from '@suid/icons-material/Send';
 import GitHubIcon from './GitHubIcon';
 
 export default function Auth() {
@@ -129,7 +129,7 @@ export default function Auth() {
             <Button
               variant="contained"
               aria-live="polite"
-              onClick={() => handleLoginOauth("github")}
+              onClick={() => handleLoginOauth('github')}
               endIcon={<GitHubIcon />}
               sx={{
                 backgroundColor: "#171515",

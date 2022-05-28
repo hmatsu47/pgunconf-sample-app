@@ -5,11 +5,11 @@ export declare type Article = {
   id: number,
   updatedAt: Date,
   title: string,
-  note?: string,
+  note: string,
   noteType: number,
   userId: string,
   userName: string,
-  avatarUrl?: string
+  avatarUrl: string
 }
 // アラートメッセージ
 export declare type Message = {

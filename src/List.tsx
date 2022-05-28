@@ -1,4 +1,4 @@
-import { createSignal, createEffect, For, Match, Show, Switch } from 'solid-js';
+import { createSignal, createEffect, For, Show } from 'solid-js';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from './commons/supabaseClient';
 import { Article, Message } from './types/common';
@@ -11,6 +11,8 @@ import ViewItem from './ViewItem';
 
 type Props = {
   session: Session,
+  userName: string,
+  userAvatarName: string,
   avatars: Map<string, string>
 }
 
@@ -28,7 +30,7 @@ const List = (props: Props) => {
     // 投稿一覧読み取り（DB から）
     try {
       setLoading(true);
-
+      
       const { data, error, status } = await supabase
         .from('articles')
         .select(`
@@ -79,15 +81,29 @@ const List = (props: Props) => {
     }
   }
 
-  const resetArticle = async () => {
+  const resetArticle = () => {
     // 投稿内容をリセット
     setArticle(null);
   }
 
+  const insertOrReplactItemToArticles = (item: Article, isInsert: boolean) => {
+    // 一覧に投稿を挿入または置換
+    setLoading(true);
+    // 置換の場合は置換対象の古い投稿を削除
+    let tempList = (isInsert ? articles() : articles()?.filter((article: Article) => {
+      return (article.id !== item.id);
+    }));
+    // 新しい投稿を一覧の先頭に挿入
+    tempList?.unshift(item);
+    setArticles(tempList);
+    resetArticle();
+    setLoading(false);
+  }
+
   const removeItemFromArticles = (id: number) => {
     // 一覧から対象の投稿を削除
-    const resultList = articles()?.filter((item: Article) => {
-      return (item.id !== id);
+    const resultList = articles()?.filter((article: Article) => {
+      return (article.id !== id);
     });
     setArticles(resultList ? resultList : []);
   }
@@ -156,7 +172,9 @@ const List = (props: Props) => {
               <EditItem
                 session={props.session}
                 article={article()}
-                getArticles={() => getArticles()}
+                userName={props.userName}
+                userAvatarName={props.userAvatarName}
+                insertOrReplactItemToArticles={(item, isInsert) => insertOrReplactItemToArticles(item, isInsert)}
                 resetArticle={() => resetArticle()}
                 setMessage={setMessage}
               />
@@ -187,7 +205,7 @@ const List = (props: Props) => {
                       session={props.session}
                       article={article}
                       avatar={
-                        article.avatarUrl && article.avatarUrl !== '' ? (
+                        article.avatarUrl !== '' ? (
                           props.avatars?.get(article.avatarUrl) ? props.avatars.get(article.avatarUrl) : ''
                         ) : ''}
                       setArticle={setArticle}

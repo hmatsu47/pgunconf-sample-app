@@ -6,21 +6,23 @@ import { supabase } from './commons/supabaseClient';
 import { Article, Message } from './types/common';
 import Box from '@suid/material/Box';
 import Button from '@suid/material/Button';
-import CancelIcon from '@suid/icons-material/Cancel';
 import Card from '@suid/material/Card';
 import CardActions from '@suid/material/CardActions';
 import CardContent from '@suid/material/CardContent';
-import SaveIcon from '@suid/icons-material/Save';
 import TextField from '@suid/material/TextField';
 import ToggleButton from '@suid/material/ToggleButton';
 import ToggleButtonGroup from '@suid/material/ToggleButtonGroup';
 import Typography from '@suid/material/Typography';
+import CancelIcon from '@suid/icons-material/Cancel';
+import SaveIcon from '@suid/icons-material/Save';
 import './Item.css';
 
 type Props = {
   session: Session,
   article: Article | null,
-  getArticles: () => void,
+  userName: string,
+  userAvatarName: string,
+  insertOrReplactItemToArticles: (item: Article, isInsert: boolean) => void,
   resetArticle: () => void,
   setMessage: Setter<Message>
 }
@@ -38,14 +40,19 @@ export default (props: Props) => {
   const [title, setTitle] = createSignal<string>('');
   const [note, setNote] = createSignal<string>('');
   const [noteType, setNoteType] = createSignal<number>(NoteType.Unpermitted);
+  const [userName, setUserName] = createSignal<string>('');
+  const [avatarUrl, setAvatarUrl] = createSignal<string>('');
 
   createEffect(() => {
     setArticle();
+    console.log(avatarUrl());
     setFocus('title');
   })
 
   const setArticle = async () => {
     if (!props.article) {
+      setUserName(props.userName);
+      setAvatarUrl(props.userAvatarName);
       return;
     }
     // 投稿内容をセット
@@ -54,6 +61,8 @@ export default (props: Props) => {
     setTitle(props.article.title);
     setNote(props.article.note ? props.article.note : '');
     setNoteType(props.article.noteType);
+    setUserName(props.article.userName);
+    setAvatarUrl(props.article.avatarUrl);
     setLoading(false);
   }
 
@@ -64,6 +73,8 @@ export default (props: Props) => {
     setTitle('');
     setNote('');
     setNoteType(1);
+    setUserName(props.userName);
+    setAvatarUrl(props.userAvatarName);
     setLoading(false);
     setFocus('title');
     if(!props.article) {
@@ -85,26 +96,36 @@ export default (props: Props) => {
       }
       setLoading(true);
 
-      const { error } = await (isInsert ? (
+      const { data, error } = await (isInsert ? (
         supabase
           .from('articles')
-          .insert(updates, { returning: 'minimal' })
+          .insert(updates)
         ) : (
         supabase
           .from('articles')
-          .update(updates, { returning: 'minimal' })
+          .update(updates)
           .match({ id: props.article!.id }))
         );
 
       if (error) {
         throw error;
       }
-      props.getArticles();
+      // 画面の一覧を更新
+      const article: Article = {
+        id: data![0]?.id!,
+        updatedAt: new Date(data![0]?.updated_at),
+        title: data![0]?.title,
+        note: (data![0]?.note ? data![0]?.note : ''),
+        noteType: data![0]?.note_type,
+        userId: data![0]?.userid,
+        userName: userName(),
+        avatarUrl: (avatarUrl() ? avatarUrl()! : '')
+      }
+      props.insertOrReplactItemToArticles(article, isInsert);
       props.setMessage({
         severity: 'success',
         text: `投稿を${newArticle() ? '登録' : '更新'}しました。`
       });
-      resetArticle();
     } catch (error) {
       props.setMessage({
         severity: 'error',

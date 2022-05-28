@@ -1,20 +1,22 @@
-import { createSignal, createEffect, Accessor, Show } from 'solid-js';
+import { createSignal, createEffect, Accessor, Show, Setter } from 'solid-js';
 import { Session } from '@supabase/supabase-js';
+import { downloadImage } from './commons/downloadImage';
 import { setFocus } from './commons/setFocus';
 import { supabase } from './commons/supabaseClient';
 import { Message } from './types/common';
 import Alert from '@suid/material/Alert';
 import Box from '@suid/material/Box';
 import Button from '@suid/material/Button';
-import SaveIcon from '@suid/icons-material/Save';
 import Stack from '@suid/material/Stack';
 import TextField from '@suid/material/TextField';
 import Typography from '@suid/material/Typography';
+import SaveIcon from '@suid/icons-material/Save';
 import EditAvatar from './EditAvatar';
 
 type Props = {
   session: Session,
-  getProfiled: () => void,
+  setUserName: Setter<string | null>,
+  setUserAvatarUrl: Setter<string | null>,
   getAvatarImages: () => void
 }
 type UpdateParams = {
@@ -101,7 +103,13 @@ const Account = (props: Props) => {
         severity: 'success',
         text: 'プロフィールを更新しました。'
       });
-      props.getProfiled();
+      if (avatarUrl()) {
+        const url: string | undefined = await downloadImage(avatarUrl(), setMessage);
+        if (url) {
+          props.setUserAvatarUrl(url);
+        }
+      }
+      props.setUserName(username());
     } catch (error) {
       setMessage({
         severity: 'error',
