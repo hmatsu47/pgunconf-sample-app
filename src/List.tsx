@@ -122,6 +122,7 @@ const List = (props: Props) => {
       return error;
     }
   }
+  
   const deleteArticle = async (id: number) => {
     // 投稿削除（DB から）
     try {
