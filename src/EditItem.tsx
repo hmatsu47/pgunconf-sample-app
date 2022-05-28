@@ -33,11 +33,6 @@ type Updates = {
   updated_at: Date,
   userid: string
 }
-type Author = {
-  id: number,
-  updated_at: Date,
-  userid: string
-}
 
 export default (props: Props) => {
   const [loading, setLoading] = createSignal<boolean>(false);
@@ -116,7 +111,7 @@ export default (props: Props) => {
       }
       if (isInsert) {
         // 新規投稿→投稿者を登録
-        const author: Author = {
+        const author = {
           id: data![0]?.id!,
           updated_at: new Date(data![0]?.updated_at),
           userid: props.session.user!.id
