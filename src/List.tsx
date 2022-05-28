@@ -108,10 +108,31 @@ const List = (props: Props) => {
     setArticles(resultList ? resultList : []);
   }
 
+  const deleteAuthor = async(id: number) => {
+    // 投稿者削除（DB から）
+    try {
+
+      const { error } = await supabase
+        .from('authors')
+        .delete({ returning: 'minimal' })
+        .match({ id: id });
+
+      return error;
+    } catch (error) {
+      return error;
+    }
+  }
   const deleteArticle = async (id: number) => {
     // 投稿削除（DB から）
     try {
 
+      // まずは投稿者を削除
+      const authorError = await deleteAuthor(id);
+
+      if (authorError) {
+        throw authorError;
+      }
+      // 次に投稿を削除
       const { error } = await supabase
         .from('articles')
         .delete({ returning: 'minimal' })
