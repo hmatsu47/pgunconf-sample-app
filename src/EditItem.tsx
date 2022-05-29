@@ -33,6 +33,11 @@ type Updates = {
   updated_at: Date,
   userid: string
 }
+type Author = {
+  id: number,
+  updated_at: Date,
+  userid: string 
+}
 
 export default (props: Props) => {
   const [loading, setLoading] = createSignal<boolean>(false);
@@ -82,6 +87,19 @@ export default (props: Props) => {
     props.resetArticle();
   }
 
+  const addAuthor = async (author: Author) => {
+    // 投稿者登録（DB へ）
+    try {
+      const { error } = await supabase
+      .from('authors')
+      .insert(author, { returning: 'minimal' });
+
+    return error;
+  } catch (error) {
+    return error;
+  }
+}
+
   const addOrUpdateArticle = async (updates: Updates, isInsert: boolean) => {
     // 投稿登録・更新（DB へ）
     try {
@@ -116,13 +134,7 @@ export default (props: Props) => {
           updated_at: new Date(data![0]?.updated_at),
           userid: props.session.user!.id
         };
-        const { error } = await supabase
-          .from('authors')
-          .insert(author, {
-            returning: 'minimal',
-          }
-        );
-  
+        addAuthor(author);
         if (error) {
           throw error;
         }

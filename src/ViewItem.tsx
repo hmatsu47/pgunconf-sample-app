@@ -21,7 +21,7 @@ type Props = {
   session: Session,
   article: Article,
   avatar?: string,
-  setArticle: Setter<Article>,
+  changeArticle: (article: Article) => void,
   deleteArticleAction: (id: number) => void
 }
 
@@ -118,7 +118,7 @@ const ViewItem = (props: Props) => {
           <CardActions sx={{ padding: 0 }}>
             <IconButton
               aria-label="edit"
-              onClick={() => props.setArticle(props.article)}
+              onClick={() => props.changeArticle(props.article)}
               disabled={
                 props.article.userId !== props.session.user!.id && props.article.noteType !== NoteType.Writable
               }

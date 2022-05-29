@@ -17,7 +17,8 @@ type Props = {
 }
 
 const List = (props: Props) => {
-  const [loading, setLoading] = createSignal<boolean>(false);
+  const [loadingEditor, setLoadingEditor] = createSignal<boolean>(false);
+  const [loadingList, setLoadingList] = createSignal<boolean>(false);
   const [article, setArticle] = createSignal<Article | null>(null);
   const [articles, setArticles] = createSignal<Article[]>();
   const [message, setMessage] = createSignal<Message>({ severity: 'info', text: '' });
@@ -29,7 +30,8 @@ const List = (props: Props) => {
   const getArticles = async () => {
     // 投稿一覧読み取り（DB から）
     try {
-      setLoading(true);
+      setLoadingList(true);
+      setLoadingEditor(true);
       
       const { data, error, status } = await supabase
         .from('articles')
@@ -77,8 +79,16 @@ const List = (props: Props) => {
         }`
       });
     } finally {
-      setLoading(false);
+      setLoadingEditor(false);
+      setLoadingList(false);
     }
+  }
+
+  const changeArticle = (article: Article) => {
+    // 投稿編集
+    setLoadingEditor(true);
+    setArticle(article);
+    setLoadingEditor(false);
   }
 
   const resetArticle = () => {
@@ -88,7 +98,8 @@ const List = (props: Props) => {
 
   const insertOrReplactItemToArticles = (item: Article, isInsert: boolean) => {
     // 一覧に投稿を挿入または置換
-    setLoading(true);
+    setLoadingEditor(true);
+    setLoadingList(true);
     // 置換の場合は置換対象の古い投稿を削除
     let tempList = (isInsert ? articles() : articles()?.filter((article: Article) => {
       return (article.id !== item.id);
@@ -97,7 +108,8 @@ const List = (props: Props) => {
     tempList?.unshift(item);
     setArticles(tempList);
     resetArticle();
-    setLoading(false);
+    setLoadingEditor(false);
+    setLoadingList(false);
   }
 
   const removeItemFromArticles = (id: number) => {
@@ -142,11 +154,13 @@ const List = (props: Props) => {
       if (error) {
         throw error;
       }
-      setLoading(true);
+      setLoadingList(true);
       removeItemFromArticles(id);
       if (article() && id === article()!.id) {
         // 編集中の投稿を削除した場合は編集画面をクリアする
+        setLoadingEditor(true);
         await resetArticle();
+        setLoadingEditor(false);
       }
       setMessage({
         severity: 'success',
@@ -158,7 +172,7 @@ const List = (props: Props) => {
         text: `エラーが発生しました : ${error.error_description || error.message}`
       });
     } finally {
-      setLoading(false);
+      setLoadingList(false);
     }
   }
 
@@ -186,57 +200,60 @@ const List = (props: Props) => {
         direction="column"
       >
         <Box sx={{ padding: "10px 0 0 0" }}>
-          {loading() ? (
+          {loadingEditor() ? (
             <>
             </>
           ) : (
+            <EditItem
+              session={props.session}
+              article={article()}
+              userName={props.userName}
+              userAvatarName={props.userAvatarName}
+              insertOrReplactItemToArticles={(item, isInsert) => insertOrReplactItemToArticles(item, isInsert)}
+              resetArticle={() => resetArticle()}
+              setMessage={setMessage}
+            />
+          )}
+          <Show
+            when={message().text !== ''}
+            fallback={<></>}
+          >
+            <Box sx={{ padding: "0 0 10px 0" }}>
+              <Alert severity={message().severity}>
+                {message().text}
+              </Alert>
+            </Box>
+          </Show>
+          {loadingList() ? (
             <>
-              <EditItem
-                session={props.session}
-                article={article()}
-                userName={props.userName}
-                userAvatarName={props.userAvatarName}
-                insertOrReplactItemToArticles={(item, isInsert) => insertOrReplactItemToArticles(item, isInsert)}
-                resetArticle={() => resetArticle()}
-                setMessage={setMessage}
-              />
-              <Show
-                when={message().text !== ''}
+            </>
+          ) : (
+            <Show
+              when={articles() && articles()!.length > 0}
+              fallback={
+                <Typography variant="body1" gutterBottom>
+                  投稿はありません
+                </Typography>
+              }
+            >
+              <For
+                each={articles()}
                 fallback={<></>}
               >
-                <Box sx={{ padding: "0 0 10px 0" }}>
-                  <Alert severity={message().severity}>
-                    {message().text}
-                  </Alert>
-                </Box>
-              </Show>
-              <Show
-                when={articles() && articles()!.length > 0}
-                fallback={
-                  <Typography variant="body1" gutterBottom>
-                    投稿はありません
-                  </Typography>
+                {(article) => 
+                  <ViewItem
+                    session={props.session}
+                    article={article}
+                    avatar={
+                      article.avatarUrl !== '' ? (
+                        props.avatars?.get(article.avatarUrl) ? props.avatars.get(article.avatarUrl) : ''
+                      ) : ''}
+                    changeArticle={changeArticle}
+                    deleteArticleAction={deleteArticleAction}
+                  />
                 }
-              >
-                <For
-                  each={articles()}
-                  fallback={<></>}
-                >
-                  {(article) => 
-                    <ViewItem
-                      session={props.session}
-                      article={article}
-                      avatar={
-                        article.avatarUrl !== '' ? (
-                          props.avatars?.get(article.avatarUrl) ? props.avatars.get(article.avatarUrl) : ''
-                        ) : ''}
-                      setArticle={setArticle}
-                      deleteArticleAction={deleteArticleAction}
-                    />
-                  }
-                </For>
-              </Show>
-            </>
+              </For>
+            </Show>
           )}
         </Box>
       </Stack>
