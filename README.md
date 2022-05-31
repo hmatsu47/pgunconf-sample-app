@@ -56,3 +56,4 @@ npm run dev
 
 - **[SolidJS で Material-UI（SUID）を試してみた](https://zenn.dev/hmatsu47/articles/solidjs-suid-sample)**
 - **[SolidJS で Supabase の Row Level Security を試してみた](https://qiita.com/hmatsu47/items/b6ba2d2994e1632c13ea)**
+- **[SolidJS で Supabase の Row Level Security を試してみた…の続き（補足）](https://qiita.com/hmatsu47/items/774a3ab9441fe8eb96c7)**
