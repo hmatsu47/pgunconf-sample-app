@@ -110,3 +110,6 @@ alter policy "Users can update their own articles or free-updatable articles."
             select userid from authors where articles.id = authors.id)
           )
         );
+
+alter table articles
+  add constraint note_type_range check (note_type between 1 and 3);
