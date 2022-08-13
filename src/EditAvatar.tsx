@@ -1,24 +1,24 @@
-import { createEffect, createSignal, Setter } from 'solid-js';
-import { downloadImage } from './commons/downloadImage';
-import { supabase } from './commons/supabaseClient';
-import { Message } from './types/common';
-import Box from '@suid/material/Box';
-import Button from '@suid/material/Button';
-import Stack from '@suid/material/Stack';
-import Typography from '@suid/material/Typography';
-import useTheme from '@suid/material/styles/useTheme';
-import UploadIcon from '@suid/icons-material/Upload';
+import { createEffect, createSignal, Setter } from "solid-js";
+import { downloadImage } from "./commons/downloadImage";
+import { supabase } from "./commons/supabaseClient";
+import { Message } from "./types/common";
+import Box from "@suid/material/Box";
+import Button from "@suid/material/Button";
+import Stack from "@suid/material/Stack";
+import Typography from "@suid/material/Typography";
+import useTheme from "@suid/material/styles/useTheme";
+import UploadIcon from "@suid/icons-material/Upload";
 
 type Props = {
-  url: string,
-  size: string,
-  onUpload: (url: string) => void,
-  setMessage: Setter<Message>,
-  getAvatarImages: () => void
-}
+  url: string;
+  size: string;
+  onUpload: (url: string) => void;
+  setMessage: Setter<Message>;
+  getAvatarImages: () => void;
+};
 
 export default (props: Props | null) => {
-  const [avatarUrl, setAvatarUrl] = createSignal<string>('');
+  const [avatarUrl, setAvatarUrl] = createSignal<string>("");
   const [uploading, setUploading] = createSignal<boolean>(false);
 
   createEffect(async () => {
@@ -33,7 +33,7 @@ export default (props: Props | null) => {
       }
       setAvatarUrl(url);
     }
-  })
+  });
 
   const uploadAvatar = async (event: Event) => {
     // アバター画像をアップロード
@@ -43,17 +43,16 @@ export default (props: Props | null) => {
       const target = event.target as HTMLInputElement;
       const files = target.files as FileList;
       if (files.length === 0) {
-        throw new Error('アップロードする画像を正しく選択してください');
+        throw new Error("アップロードする画像を正しく選択してください");
       }
 
       const file = files[0];
-      const fileExt = file.name.split('.').pop();
+      const fileExt = file.name.split(".").pop();
       const fileName = `${Math.random()}.${fileExt}`;
       const filePath = `${fileName}`;
 
-      let { error: uploadError } = await supabase
-        .storage
-        .from('avatars')
+      let { error: uploadError } = await supabase.storage
+        .from("avatars")
         .upload(filePath, file);
 
       if (uploadError) {
@@ -70,17 +69,15 @@ export default (props: Props | null) => {
         return;
       }
       props.setMessage({
-        severity: 'error',
+        severity: "error",
         text: `エラーが発生しました : ${
-          error.error_description ||
-          error.message ||
-          'アップロード失敗'
-        }`
+          error.error_description || error.message || "アップロード失敗"
+        }`,
       });
     } finally {
       setUploading(false);
     }
-  }
+  };
 
   const theme = useTheme();
   // アバター画像とアップロードコントロールを表示
@@ -91,11 +88,11 @@ export default (props: Props | null) => {
       sx={{
         width: props!.size,
         display: "flex",
-        justifyContent: "center"
+        justifyContent: "center",
       }}
       aria-live="polite"
     >
-      {avatarUrl() === '' ? (
+      {avatarUrl() === "" ? (
         <Box
           sx={{
             height: props!.size,
@@ -103,27 +100,22 @@ export default (props: Props | null) => {
             backgroundColor: theme.palette.grey[100],
             display: "flex",
             alignItems: "center",
-            justifyContent: "center"
+            justifyContent: "center",
           }}
         >
-          <Typography variant="body1">
-            No image
-          </Typography>
+          <Typography variant="body1">No image</Typography>
         </Box>
       ) : (
         <img
           src={avatarUrl()}
-          alt={'Avatar'}
+          alt={"Avatar"}
           class="avatar image"
           style={{ height: props!.size, width: props!.size }}
         />
       )}
       {uploading() ? (
         <Box>
-          <Typography
-            variant="body1"
-            gutterBottom
-          >
+          <Typography variant="body1" gutterBottom>
             アップロード中...
           </Typography>
         </Box>
@@ -149,5 +141,5 @@ export default (props: Props | null) => {
         </label>
       )}
     </Stack>
-  )
-}
+  );
+};

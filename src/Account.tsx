@@ -1,47 +1,50 @@
-import { createSignal, createEffect, Accessor, Show, Setter } from 'solid-js';
-import { Session } from '@supabase/supabase-js';
-import { downloadImage } from './commons/downloadImage';
-import { setFocus } from './commons/setFocus';
-import { supabase } from './commons/supabaseClient';
-import { Message } from './types/common';
-import Alert from '@suid/material/Alert';
-import Box from '@suid/material/Box';
-import Button from '@suid/material/Button';
-import Stack from '@suid/material/Stack';
-import TextField from '@suid/material/TextField';
-import Typography from '@suid/material/Typography';
-import SaveIcon from '@suid/icons-material/Save';
-import EditAvatar from './EditAvatar';
+import { createSignal, createEffect, Accessor, Show, Setter } from "solid-js";
+import { Session } from "@supabase/supabase-js";
+import { downloadImage } from "./commons/downloadImage";
+import { setFocus } from "./commons/setFocus";
+import { supabase } from "./commons/supabaseClient";
+import { Message } from "./types/common";
+import Alert from "@suid/material/Alert";
+import Box from "@suid/material/Box";
+import Button from "@suid/material/Button";
+import Stack from "@suid/material/Stack";
+import TextField from "@suid/material/TextField";
+import Typography from "@suid/material/Typography";
+import SaveIcon from "@suid/icons-material/Save";
+import EditAvatar from "./EditAvatar";
 
 type Props = {
-  session: Session,
-  setUserName: Setter<string | null>,
-  setUserAvatarUrl: Setter<string | null>,
-  getAvatarImages: () => void
-}
+  session: Session;
+  setUserName: Setter<string | null>;
+  setUserAvatarUrl: Setter<string | null>;
+  getAvatarImages: () => void;
+};
 type UpdateParams = {
-  username: Accessor<string>,
-  website: Accessor<string>,
-  avatarUrl: string
-}
+  username: Accessor<string>;
+  website: Accessor<string>;
+  avatarUrl: string;
+};
 
 const Account = (props: Props) => {
   const [loading, setLoading] = createSignal<boolean>(true);
   const [updating, setUpdating] = createSignal<boolean>(false);
-  const [username, setUsername] = createSignal<string>('');
-  const [website, setWebsite] = createSignal<string>('');
-  const [avatarUrl, setAvatarUrl] = createSignal<string>('');
-  const [message, setMessage] = createSignal<Message>({ severity: 'info', text: '' });
+  const [username, setUsername] = createSignal<string>("");
+  const [website, setWebsite] = createSignal<string>("");
+  const [avatarUrl, setAvatarUrl] = createSignal<string>("");
+  const [message, setMessage] = createSignal<Message>({
+    severity: "info",
+    text: "",
+  });
 
   createEffect(() => {
     getProfile();
-  })
+  });
 
   createEffect(() => {
     if (!loading()) {
-      setFocus('username');
+      setFocus("username");
     }
-  })
+  });
 
   const getProfile = async () => {
     // プロフィール読み取り（DB から）
@@ -50,9 +53,9 @@ const Account = (props: Props) => {
       const user = supabase.auth.user();
 
       const { data, error, status } = await supabase
-        .from('profiles')
+        .from("profiles")
         .select(`username, website, avatar_url`)
-        .eq('id', user!.id)
+        .eq("id", user!.id)
         .single();
 
       if (error && status !== 406) {
@@ -66,15 +69,19 @@ const Account = (props: Props) => {
       }
     } catch (error) {
       setMessage({
-        severity: 'error',
-        text: `エラーが発生しました : ${error.error_description || error.message}`
+        severity: "error",
+        text: `エラーが発生しました : ${
+          error.error_description || error.message
+        }`,
       });
     } finally {
       setLoading(false);
     }
-  }
+  };
 
-  const updateProfile = async (e: UpdateParams | { submitter: HTMLElement; }) => {
+  const updateProfile = async (
+    e: UpdateParams | { submitter: HTMLElement }
+  ) => {
     // プロフィール更新（DB へ）
     try {
       setUpdating(true);
@@ -86,25 +93,25 @@ const Account = (props: Props) => {
         username: username(),
         website: website(),
         avatar_url: avatarUrl(),
-        updated_at: new Date()
+        updated_at: new Date(),
       };
 
-      const { error } = await supabase
-        .from('profiles')
-        .upsert(updates, {
-          returning: 'minimal',
-        }
-      );
+      const { error } = await supabase.from("profiles").upsert(updates, {
+        returning: "minimal",
+      });
 
       if (error) {
         throw error;
       }
       setMessage({
-        severity: 'success',
-        text: 'プロフィールを更新しました。'
+        severity: "success",
+        text: "プロフィールを更新しました。",
       });
       if (avatarUrl()) {
-        const url: string | undefined = await downloadImage(avatarUrl(), setMessage);
+        const url: string | undefined = await downloadImage(
+          avatarUrl(),
+          setMessage
+        );
         if (url) {
           props.setUserAvatarUrl(url);
         }
@@ -112,18 +119,16 @@ const Account = (props: Props) => {
       props.setUserName(username());
     } catch (error) {
       setMessage({
-        severity: 'error',
+        severity: "error",
         text: `エラーが発生しました : ${
-          error.error_description ||
-          error.message ||
-          '更新失敗'
-        }`
+          error.error_description || error.message || "更新失敗"
+        }`,
       });
     } finally {
       setLoading(false);
       setUpdating(false);
     }
-  }
+  };
 
   // プロフィール画面を表示
   return (
@@ -133,18 +138,15 @@ const Account = (props: Props) => {
         minWidth: "320px",
         maxWidth: "420px",
         display: "flex",
-        justifyContent: "center"
+        justifyContent: "center",
       }}
       aria-live="polite"
     >
       <Stack spacing={2} direction="column">
         <Box sx={{ padding: "10px 0 0 0" }}>
           {loading() ? (
-            <Typography
-              variant="body1"
-              gutterBottom
-            >
-              {updating() ? '保存中...' : ''}
+            <Typography variant="body1" gutterBottom>
+              {updating() ? "保存中..." : ""}
             </Typography>
           ) : (
             <>
@@ -157,7 +159,7 @@ const Account = (props: Props) => {
                     updateProfile({
                       username,
                       website,
-                      avatarUrl: url
+                      avatarUrl: url,
                     });
                   }}
                   setMessage={setMessage}
@@ -169,12 +171,11 @@ const Account = (props: Props) => {
                     padding: "54px 0 0 0",
                     flexGrow: 1,
                     display: "flex",
-                    justifyContent: "center"
-                  }}>
+                    justifyContent: "center",
+                  }}
+                >
                   <Box>
-                    <Typography variant="subtitle2">
-                      Email:
-                    </Typography>
+                    <Typography variant="subtitle2">Email:</Typography>
                     <Typography variant="body2">
                       {props.session.user!.email}
                     </Typography>
@@ -217,7 +218,7 @@ const Account = (props: Props) => {
                     sx={{
                       display: "flex",
                       justifyContent: "center",
-                      width: "100%"
+                      width: "100%",
                     }}
                     aria-live="polite"
                     endIcon={<SaveIcon />}
@@ -226,10 +227,7 @@ const Account = (props: Props) => {
                   </Button>
                 </Box>
                 <Box sx={{ padding: "10px 0 0 0" }}>
-                  <Show
-                    when={message().text !== ''}
-                    fallback={<></>}
-                  >
+                  <Show when={message().text !== ""} fallback={<></>}>
                     <Alert severity={message().severity}>
                       {message().text}
                     </Alert>
@@ -242,6 +240,6 @@ const Account = (props: Props) => {
       </Stack>
     </Box>
   );
-}
+};
 
 export default Account;

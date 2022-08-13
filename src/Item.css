@@ -1,10 +1,17 @@
 @media (max-width: 419px) {
-  div#itemCard { min-width: 300px; }
+  div#itemCard {
+    min-width: 300px;
+  }
 }
 @media (min-width: 720px) {
-  div#itemCard { min-width: 700px; }
+  div#itemCard {
+    min-width: 700px;
+  }
 }
 
 textarea#note {
-  width: 100%; height: 9.0em; font-size: 1rem; line-height: 1.8em;
+  width: 100%;
+  height: 9em;
+  font-size: 1rem;
+  line-height: 1.8em;
 }

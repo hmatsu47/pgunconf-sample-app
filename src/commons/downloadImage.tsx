@@ -1,5 +1,5 @@
-import { supabase } from './supabaseClient';
-import { Message } from '../types/common';
+import { supabase } from "./supabaseClient";
+import { Message } from "../types/common";
 
 export const downloadImage = async (
   path: string,
@@ -7,9 +7,8 @@ export const downloadImage = async (
 ) => {
   // アバター画像をダウンロード（ストレージから）
   try {
-    const { data, error } = await supabase
-      .storage
-      .from('avatars')
+    const { data, error } = await supabase.storage
+      .from("avatars")
       .download(path);
     if (error) {
       throw error;
@@ -17,39 +16,34 @@ export const downloadImage = async (
     return URL.createObjectURL(data);
   } catch (error) {
     setMessage({
-      severity: 'error',
+      severity: "error",
       text: `アバター画像のダウンロードに失敗しました : ${
-          error.error_description ||
-          error.message
-      }`
+        error.error_description || error.message
+      }`,
     });
   }
-}
+};
 
 export const listImages = async (setMessage: (message: Message) => void) => {
   // アバター画像の一覧を取得（ストレージから）
   try {
-    const { data, error } = await supabase
-      .storage
-      .from('avatars')
-      .list();
+    const { data, error } = await supabase.storage.from("avatars").list();
     if (error) {
       throw error;
     }
     let urls: string[] = [];
-    data?.forEach(file => {
-      if (file.name !== '') {
+    data?.forEach((file) => {
+      if (file.name !== "") {
         urls.push(file.name);
       }
     });
     return urls;
   } catch (error) {
     setMessage({
-      severity: 'error',
+      severity: "error",
       text: `アバター画像一覧の取得に失敗しました : ${
-          error.error_description ||
-          error.message
-      }`
+        error.error_description || error.message
+      }`,
     });
   }
-}
+};

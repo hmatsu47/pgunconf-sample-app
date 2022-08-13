@@ -1,41 +1,45 @@
-import { createSignal, createEffect, For, Show } from 'solid-js';
-import { Session } from '@supabase/supabase-js';
-import { supabase } from './commons/supabaseClient';
-import { Article, Message } from './types/common';
-import Alert from '@suid/material/Alert';
-import Box from '@suid/material/Box';
-import Stack from '@suid/material/Stack';
-import Typography from '@suid/material/Typography';
-import EditItem from './EditItem';
-import ViewItem from './ViewItem';
+import { createSignal, createEffect, For, Show } from "solid-js";
+import { Session } from "@supabase/supabase-js";
+import { supabase } from "./commons/supabaseClient";
+import { Article, Message } from "./types/common";
+import Alert from "@suid/material/Alert";
+import Box from "@suid/material/Box";
+import Stack from "@suid/material/Stack";
+import Typography from "@suid/material/Typography";
+import EditItem from "./EditItem";
+import ViewItem from "./ViewItem";
 
 type Props = {
-  session: Session,
-  userName: string,
-  userAvatarName: string,
-  avatars: Map<string, string>
-}
+  session: Session;
+  userName: string;
+  userAvatarName: string;
+  avatars: Map<string, string>;
+};
 
 const List = (props: Props) => {
   const [loadingEditor, setLoadingEditor] = createSignal<boolean>(false);
   const [loadingList, setLoadingList] = createSignal<boolean>(false);
   const [article, setArticle] = createSignal<Article | null>(null);
   const [articles, setArticles] = createSignal<Article[]>();
-  const [message, setMessage] = createSignal<Message>({ severity: 'info', text: '' });
+  const [message, setMessage] = createSignal<Message>({
+    severity: "info",
+    text: "",
+  });
 
   createEffect(() => {
     getArticles();
-  })
+  });
 
   const getArticles = async () => {
     // 投稿一覧読み取り（DB から）
     try {
       setLoadingList(true);
       setLoadingEditor(true);
-      
+
       const { data, error, status } = await supabase
-        .from('articles')
-        .select(`
+        .from("articles")
+        .select(
+          `
           id,
           updated_at,
           title,
@@ -46,99 +50,98 @@ const List = (props: Props) => {
             username,
             avatar_url
           )
-        `)
-        .order('updated_at', { ascending: false });
+        `
+        )
+        .order("updated_at", { ascending: false });
 
       if (error && status !== 406) {
         throw error;
       }
 
       if (data) {
-        const listArticles = data.map(obj => {
+        const listArticles = data.map((obj) => {
           const article: Article = {
             id: obj.id,
             updatedAt: new Date(obj.updated_at),
             title: obj.title,
-            note: (obj.note ? obj.note : ''),
+            note: obj.note ? obj.note : "",
             noteType: obj.note_type,
             userId: obj.userid,
-            userName: (obj.profiles.username ? obj.profiles.username : ''),
-            avatarUrl: (obj.profiles.avatar_url ? obj.profiles.avatar_url : '')
+            userName: obj.profiles.username ? obj.profiles.username : "",
+            avatarUrl: obj.profiles.avatar_url ? obj.profiles.avatar_url : "",
           };
           return article;
-        })
+        });
         setArticles(listArticles);
       }
     } catch (error) {
       setMessage({
-        severity: 'error',
+        severity: "error",
         text: `エラーが発生しました : ${
-          error.error_description ||
-          error.message ||
-          'データ読み込み失敗'
-        }`
+          error.error_description || error.message || "データ読み込み失敗"
+        }`,
       });
     } finally {
       setLoadingEditor(false);
       setLoadingList(false);
     }
-  }
+  };
 
   const changeArticle = (article: Article) => {
     // 投稿編集
     setLoadingEditor(true);
     setArticle(article);
     setLoadingEditor(false);
-  }
+  };
 
   const resetArticle = () => {
     // 投稿内容をリセット
     setArticle(null);
-  }
+  };
 
   const insertOrReplactItemToArticles = (item: Article, isInsert: boolean) => {
     // 一覧に投稿を挿入または置換
     setLoadingEditor(true);
     setLoadingList(true);
     // 置換の場合は置換対象の古い投稿を削除
-    let tempList = (isInsert ? articles() : articles()?.filter((article: Article) => {
-      return (article.id !== item.id);
-    }));
+    let tempList = isInsert
+      ? articles()
+      : articles()?.filter((article: Article) => {
+          return article.id !== item.id;
+        });
     // 新しい投稿を一覧の先頭に挿入
     tempList?.unshift(item);
     setArticles(tempList);
     resetArticle();
     setLoadingEditor(false);
     setLoadingList(false);
-  }
+  };
 
   const removeItemFromArticles = (id: number) => {
     // 一覧から対象の投稿を削除
     const resultList = articles()?.filter((article: Article) => {
-      return (article.id !== id);
+      return article.id !== id;
     });
     setArticles(resultList ? resultList : []);
-  }
+  };
 
-  const deleteAuthor = async(id: number) => {
+  const deleteAuthor = async (id: number) => {
     // 投稿者削除（DB から）
     try {
-
       const { error } = await supabase
-        .from('authors')
-        .delete({ returning: 'minimal' })
+        .from("authors")
+        .delete({ returning: "minimal" })
         .match({ id: id });
 
       return error;
     } catch (error) {
       return error;
     }
-  }
-  
+  };
+
   const deleteArticle = async (id: number) => {
     // 投稿削除（DB から）
     try {
-
       // まずは投稿者を削除
       const authorError = await deleteAuthor(id);
 
@@ -147,8 +150,8 @@ const List = (props: Props) => {
       }
       // 次に投稿を削除
       const { error } = await supabase
-        .from('articles')
-        .delete({ returning: 'minimal' })
+        .from("articles")
+        .delete({ returning: "minimal" })
         .match({ id: id });
 
       if (error) {
@@ -163,26 +166,28 @@ const List = (props: Props) => {
         setLoadingEditor(false);
       }
       setMessage({
-        severity: 'success',
-        text: '投稿を削除しました'
+        severity: "success",
+        text: "投稿を削除しました",
       });
     } catch (error) {
       setMessage({
-        severity: 'error',
-        text: `エラーが発生しました : ${error.error_description || error.message}`
+        severity: "error",
+        text: `エラーが発生しました : ${
+          error.error_description || error.message
+        }`,
       });
     } finally {
       setLoadingList(false);
     }
-  }
+  };
 
   const deleteArticleAction = (id: number) => {
     // 投稿の削除（確認）
-    if (!confirm('本当に削除しますか？')) {
+    if (!confirm("本当に削除しますか？")) {
       return;
     }
     deleteArticle(id);
-  }
+  };
 
   // 投稿一覧画面を表示
   return (
@@ -191,42 +196,34 @@ const List = (props: Props) => {
         width: "100%",
         minWidth: "320px",
         display: "flex",
-        justifyContent: "center"
+        justifyContent: "center",
       }}
       aria-live="polite"
     >
-      <Stack
-        spacing={2}
-        direction="column"
-      >
+      <Stack spacing={2} direction="column">
         <Box sx={{ padding: "10px 0 0 0" }}>
           {loadingEditor() ? (
-            <>
-            </>
+            <></>
           ) : (
             <EditItem
               session={props.session}
               article={article()}
               userName={props.userName}
               userAvatarName={props.userAvatarName}
-              insertOrReplactItemToArticles={(item, isInsert) => insertOrReplactItemToArticles(item, isInsert)}
+              insertOrReplactItemToArticles={(item, isInsert) =>
+                insertOrReplactItemToArticles(item, isInsert)
+              }
               resetArticle={() => resetArticle()}
               setMessage={setMessage}
             />
           )}
-          <Show
-            when={message().text !== ''}
-            fallback={<></>}
-          >
+          <Show when={message().text !== ""} fallback={<></>}>
             <Box sx={{ padding: "0 0 10px 0" }}>
-              <Alert severity={message().severity}>
-                {message().text}
-              </Alert>
+              <Alert severity={message().severity}>{message().text}</Alert>
             </Box>
           </Show>
           {loadingList() ? (
-            <>
-            </>
+            <></>
           ) : (
             <Show
               when={articles() && articles()!.length > 0}
@@ -236,22 +233,22 @@ const List = (props: Props) => {
                 </Typography>
               }
             >
-              <For
-                each={articles()}
-                fallback={<></>}
-              >
-                {(article) => 
+              <For each={articles()} fallback={<></>}>
+                {(article) => (
                   <ViewItem
                     session={props.session}
                     article={article}
                     avatar={
-                      article.avatarUrl !== '' ? (
-                        props.avatars?.get(article.avatarUrl) ? props.avatars.get(article.avatarUrl) : ''
-                      ) : ''}
+                      article.avatarUrl !== ""
+                        ? props.avatars?.get(article.avatarUrl)
+                          ? props.avatars.get(article.avatarUrl)
+                          : ""
+                        : ""
+                    }
                     changeArticle={changeArticle}
                     deleteArticleAction={deleteArticleAction}
                   />
-                }
+                )}
               </For>
             </Show>
           )}
@@ -259,6 +256,6 @@ const List = (props: Props) => {
       </Stack>
     </Box>
   );
-}
+};
 
 export default List;
