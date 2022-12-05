@@ -1,5 +1,5 @@
 import { createEffect, createSignal, Setter } from "solid-js";
-import { Session } from "@supabase/supabase-js";
+import { AuthSession } from "@supabase/supabase-js";
 import { NoteType } from "./commons/NoteType";
 import { setFocus } from "./commons/setFocus";
 import { supabase } from "./commons/supabaseClient";
@@ -18,7 +18,7 @@ import SaveIcon from "@suid/icons-material/Save";
 import "./Item.css";
 
 type Props = {
-  session: Session;
+  session: AuthSession;
   article: Article | null;
   userName: string;
   userAvatarName: string;
@@ -90,9 +90,7 @@ export default (props: Props) => {
   const addAuthor = async (author: Author) => {
     // 投稿者登録（DB へ）
     try {
-      const { error } = await supabase
-        .from("authors")
-        .insert(author, { returning: "minimal" });
+      const { error } = await supabase.from("authors").insert(author);
 
       return error;
     } catch (error) {
@@ -118,7 +116,8 @@ export default (props: Props) => {
         : supabase
             .from("articles")
             .update(updates)
-            .match({ id: props.article!.id }));
+            .match({ id: props.article!.id })
+      ).select();
 
       if (error) {
         throw error;
@@ -128,7 +127,7 @@ export default (props: Props) => {
         const author = {
           id: data![0]?.id!,
           updated_at: new Date(data![0]?.updated_at),
-          userid: props.session.user!.id,
+          userid: props.session.user.id,
         };
         addAuthor(author);
         if (error) {
@@ -167,12 +166,15 @@ export default (props: Props) => {
 
   const addOrUpdateArticleAction = async () => {
     // 投稿登録または更新
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     const updates = {
       title: title(),
       note: note(),
       note_type: noteType(),
       updated_at: new Date(),
-      userid: newArticle() ? supabase.auth.user()!.id : props.article!.userId,
+      userid: newArticle() ? session?.user.id! : props.article!.userId,
     };
     addOrUpdateArticle(updates, newArticle());
   };
@@ -234,7 +236,7 @@ export default (props: Props) => {
               disabled={
                 loading() ||
                 (!newArticle() &&
-                  props.session.user!.id !== props.article!.userId)
+                  props.session.user.id !== props.article!.userId)
               }
             >
               <ToggleButton value={NoteType.Unpermitted.toString()}>

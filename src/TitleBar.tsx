@@ -1,5 +1,5 @@
 import { Accessor, Setter, Show } from "solid-js";
-import { Session } from "@supabase/supabase-js";
+import { AuthSession } from "@supabase/supabase-js";
 import { supabase } from "./commons/supabaseClient";
 import AppBar from "@suid/material/AppBar";
 import Avatar from "@suid/material/Avatar";
@@ -12,7 +12,7 @@ import LogoutIcon from "@suid/icons-material/Logout";
 import ViewListIcon from "@suid/icons-material/ViewList";
 
 type Props = {
-  session: Accessor<Session | null>;
+  session: Accessor<AuthSession | null>;
   userName: Accessor<string | null>;
   userAvatarUrl: Accessor<string | null>;
   setRoute: Setter<string>;

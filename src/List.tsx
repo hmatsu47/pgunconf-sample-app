@@ -1,5 +1,5 @@
 import { createSignal, createEffect, For, Show } from "solid-js";
-import { Session } from "@supabase/supabase-js";
+import { AuthSession } from "@supabase/supabase-js";
 import { supabase } from "./commons/supabaseClient";
 import { Article, Message } from "./types/common";
 import Alert from "@suid/material/Alert";
@@ -10,7 +10,7 @@ import EditItem from "./EditItem";
 import ViewItem from "./ViewItem";
 
 type Props = {
-  session: Session;
+  session: AuthSession;
   userName: string;
   userAvatarName: string;
   avatars: Map<string, string>;
@@ -36,6 +36,7 @@ const List = (props: Props) => {
       setLoadingList(true);
       setLoadingEditor(true);
 
+      // @ts-ignore
       const { data, error, status } = await supabase
         .from("articles")
         .select(
@@ -130,7 +131,7 @@ const List = (props: Props) => {
     try {
       const { error } = await supabase
         .from("authors")
-        .delete({ returning: "minimal" })
+        .delete()
         .match({ id: id });
 
       return error;
@@ -151,7 +152,7 @@ const List = (props: Props) => {
       // 次に投稿を削除
       const { error } = await supabase
         .from("articles")
-        .delete({ returning: "minimal" })
+        .delete()
         .match({ id: id });
 
       if (error) {

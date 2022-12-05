@@ -1,5 +1,5 @@
 import { createSignal, createEffect, Accessor, Show, Setter } from "solid-js";
-import { Session } from "@supabase/supabase-js";
+import { AuthSession } from "@supabase/supabase-js";
 import { downloadImage } from "./commons/downloadImage";
 import { setFocus } from "./commons/setFocus";
 import { supabase } from "./commons/supabaseClient";
@@ -14,7 +14,7 @@ import SaveIcon from "@suid/icons-material/Save";
 import EditAvatar from "./EditAvatar";
 
 type Props = {
-  session: Session;
+  session: AuthSession;
   setUserName: Setter<string | null>;
   setUserAvatarUrl: Setter<string | null>;
   getAvatarImages: () => void;
@@ -50,12 +50,12 @@ const Account = (props: Props) => {
     // プロフィール読み取り（DB から）
     try {
       setLoading(true);
-      const user = supabase.auth.user();
+      const { user } = props.session;
 
       const { data, error, status } = await supabase
         .from("profiles")
         .select(`username, website, avatar_url`)
-        .eq("id", user!.id)
+        .eq("id", user.id)
         .single();
 
       if (error && status !== 406) {
@@ -86,19 +86,17 @@ const Account = (props: Props) => {
     try {
       setUpdating(true);
       setLoading(true);
-      const user = supabase.auth.user();
+      const { user } = props.session;
 
       const updates = {
-        id: user!.id,
+        id: user.id,
         username: username(),
         website: website(),
         avatar_url: avatarUrl(),
         updated_at: new Date(),
       };
 
-      const { error } = await supabase.from("profiles").upsert(updates, {
-        returning: "minimal",
-      });
+      const { error } = await supabase.from("profiles").upsert(updates);
 
       if (error) {
         throw error;

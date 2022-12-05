@@ -29,7 +29,7 @@ export default function Auth() {
     // マジックリンクを送信
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signIn({ email: email() });
+      const { error } = await supabase.auth.signInWithOtp({ email: email() });
       if (error) throw error;
       setMessage({
         severity: "success",
@@ -51,7 +51,9 @@ export default function Auth() {
     // 外部の認証画面へ
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signIn({ provider: provider });
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: provider,
+      });
       if (error) throw error;
     } catch (error) {
       setMessage({

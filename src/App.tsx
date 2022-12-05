@@ -1,5 +1,5 @@
 import { createSignal, createEffect, Match, Show, Switch } from "solid-js";
-import { Session } from "@supabase/supabase-js";
+import { AuthSession } from "@supabase/supabase-js";
 import { downloadImage, listImages } from "./commons/downloadImage";
 import { supabase } from "./commons/supabaseClient";
 import { Message } from "./types/common";
@@ -12,7 +12,7 @@ import List from "./List";
 import TitleBar from "./TitleBar";
 
 export default () => {
-  const [session, setSession] = createSignal<Session | null>(null);
+  const [session, setSession] = createSignal<AuthSession | null>(null);
   const [avatarLoaded, setAvatarLoaded] = createSignal<boolean>(false);
   const [avatars, setAvatars] = createSignal<Map<string, string>>();
   const [userName, setUserName] = createSignal<string | null>(null);
@@ -25,7 +25,9 @@ export default () => {
   const [route, setRoute] = createSignal<string>("");
 
   createEffect(() => {
-    setSession(supabase.auth.session());
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
     getAvatarImages();
     // 認証状態が変化したら Session を更新
     supabase.auth.onAuthStateChange((_event, session) => {
@@ -55,7 +57,7 @@ export default () => {
       const { data, error, status } = await supabase
         .from("profiles")
         .select(`username, avatar_url`)
-        .eq("id", session()!.user!.id)
+        .eq("id", session()!.user.id)
         .single();
 
       if (error && status !== 406) {

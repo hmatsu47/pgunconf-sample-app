@@ -1,5 +1,5 @@
 import { createSignal, For, Match, Setter, Show, Switch } from "solid-js";
-import { Session } from "@supabase/supabase-js";
+import { AuthSession } from "@supabase/supabase-js";
 import { NoteType } from "./commons/NoteType";
 import { Article } from "./types/common";
 import Avatar from "@suid/material/Avatar";
@@ -18,7 +18,7 @@ import ExpandMoreIcon from "@suid/icons-material/ExpandMore";
 import "./Item.css";
 
 type Props = {
-  session: Session;
+  session: AuthSession;
   article: Article;
   avatar?: string;
   changeArticle: (article: Article) => void;
