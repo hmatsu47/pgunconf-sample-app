@@ -31,6 +31,7 @@ const Account = (props: Props) => {
   const [username, setUsername] = createSignal<string>("");
   const [website, setWebsite] = createSignal<string>("");
   const [avatarUrl, setAvatarUrl] = createSignal<string>("");
+  const [secretNote, setSecretNote] = createSignal<string>("");
   const [message, setMessage] = createSignal<Message>({
     severity: "info",
     text: "",
@@ -45,6 +46,22 @@ const Account = (props: Props) => {
       setFocus("username");
     }
   });
+
+  const getPrivate = async () => {
+    // プロフィール秘密情報読み取り（DB から）
+    const { user } = props.session;
+    // @ts-ignore
+    const { data, error, status } = await supabase
+      .from("decrypted_privates")
+      .select(`decrypted_secret_note, note_id`)
+      .eq("userid", user.id)
+      .single();
+
+    if (error && status !== 406) {
+      throw error;
+    }
+    return data;
+  };
 
   const getProfile = async () => {
     // プロフィール読み取り（DB から）
@@ -67,6 +84,15 @@ const Account = (props: Props) => {
         setWebsite(data.website);
         setAvatarUrl(data.avatar_url);
       }
+
+      const note = await getPrivate();
+
+      if (note) {
+        // @ts-ignore
+        setSecretNote(note.decrypted_secret_note);
+      } else {
+        setSecretNote("");
+      }
     } catch (error) {
       setMessage({
         severity: "error",
@@ -76,6 +102,34 @@ const Account = (props: Props) => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const updatePrivate = async () => {
+    // プロフィール秘密情報更新（DB へ）
+    const { user } = props.session;
+    // UPSERT は使わない
+    const note = await getPrivate();
+
+    const data = {
+      userid: user.id,
+      secret_note: secretNote(),
+      updated_at: new Date(),
+    };
+    const { error } = await supabase.from("privates").insert(data);
+    if (error) {
+      throw error;
+    }
+    // 実は削除はできない（API は受け付けるが…）
+    if (note) {
+      const { error } = await supabase
+        .from("privates")
+        .delete()
+        // @ts-ignore
+        .eq("note_id", note.note_id);
+      if (error) {
+        throw error;
+      }
     }
   };
 
@@ -101,6 +155,9 @@ const Account = (props: Props) => {
       if (error) {
         throw error;
       }
+
+      await updatePrivate();
+
       setMessage({
         severity: "success",
         text: "プロフィールを更新しました。",
@@ -204,6 +261,19 @@ const Account = (props: Props) => {
                     value={website()}
                     onChange={(event, value) => {
                       setWebsite(value);
+                    }}
+                    sx={{ width: "100%" }}
+                  />
+                </Box>
+                <Box sx={{ padding: "20px 0 0 0" }}>
+                  <TextField
+                    id="secret"
+                    label="秘密の情報"
+                    helperText="秘密の情報があれば入力してください"
+                    type="text"
+                    value={secretNote()}
+                    onChange={(event, value) => {
+                      setSecretNote(value);
                     }}
                     sx={{ width: "100%" }}
                   />

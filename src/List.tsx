@@ -62,13 +62,21 @@ const List = (props: Props) => {
       if (data) {
         const listArticles = data.map((obj) => {
           const article: Article = {
+            // @ts-ignore
             id: obj.id,
+            // @ts-ignore
             updatedAt: new Date(obj.updated_at),
+            // @ts-ignore
             title: obj.title,
+            // @ts-ignore
             note: obj.note ? obj.note : "",
+            // @ts-ignore
             noteType: obj.note_type,
+            // @ts-ignore
             userId: obj.userid,
+            // @ts-ignore
             userName: obj.profiles.username ? obj.profiles.username : "",
+            // @ts-ignore
             avatarUrl: obj.profiles.avatar_url ? obj.profiles.avatar_url : "",
           };
           return article;
