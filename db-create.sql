@@ -156,7 +156,5 @@ create view decrypted_privates as
   order by userid asc, note_id desc
   limit 1;
 
-grant select on pgsodium.masking_rule to authenticated;
 grant select on pgsodium.valid_key to authenticated;
 grant execute on all functions in schema pgsodium to authenticated;
-grant select on pgsodium_masks.privates to authenticated;
